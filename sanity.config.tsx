@@ -2,7 +2,6 @@
 
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
-import { visionTool } from "@sanity/vision";
 import { frFRLocale } from "@sanity/locale-fr-fr";
 import { schemaTypes, SINGLETONS } from "./sanity/schemaTypes";
 import { structure } from "./sanity/structure";
@@ -19,7 +18,6 @@ export default defineConfig({
   plugins: [
     structureTool({ structure, title: "Contenu" }),
     frFRLocale(),
-    ...(process.env.NODE_ENV === "development" ? [visionTool({ defaultApiVersion: "2026-10-01" })] : []),
   ],
   tools: (prev) => [...prev, adminLinkTool],
   schema: {

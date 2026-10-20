@@ -12,3 +12,5 @@ next-env.d.ts
 npm-debug.log*
 supabase/.temp/
 supabase/.branches/
+scripts/local-stack/shots/
+scripts/local-stack/node_modules/

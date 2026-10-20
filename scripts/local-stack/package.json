@@ -1,0 +1,9 @@
+{
+  "name": "naaqati-local-stack",
+  "private": true,
+  "type": "module",
+  "description": "Outils de test de bout en bout (hors application) : pile Supabase locale et scénarios navigateur.",
+  "dependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

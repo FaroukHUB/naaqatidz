@@ -1,0 +1,57 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getViewer } from "@/lib/server/viewer";
+import { signOut } from "@/lib/actions/auth";
+import { Notice } from "@/components/ui/Notice";
+
+export const metadata: Metadata = { title: "Espace revendeur", robots: { index: false, follow: false } };
+export const dynamic = "force-dynamic";
+
+export default async function ResellerLayout({ children }: { children: React.ReactNode }) {
+  const viewer = await getViewer();
+  if (!viewer) redirect("/connexion?suite=/revendeur");
+
+  const nav = (
+    <nav aria-label="Espace revendeur" className="flex flex-wrap items-center gap-2 border-b border-sable pb-3 text-sm">
+      <Link href="/revendeur" className="rounded-md px-3 py-2 font-semibold text-marron hover:bg-creme">Catalogue</Link>
+      <Link href="/revendeur/panier" className="rounded-md px-3 py-2 font-semibold text-marron hover:bg-creme">Panier</Link>
+      <Link href="/revendeur/commandes" className="rounded-md px-3 py-2 font-semibold text-marron hover:bg-creme">Mes commandes</Link>
+      <Link href="/revendeur/compte" className="rounded-md px-3 py-2 font-semibold text-marron hover:bg-creme">Mon compte</Link>
+      <form action={signOut} className="ml-auto"><button className="rounded-md px-3 py-2 text-marron underline">Se déconnecter</button></form>
+    </nav>
+  );
+
+  if (viewer.role === "admin") {
+    return (
+      <div className="container-page py-8">
+        <Notice title="Compte administrateur">L&apos;espace revendeur est réservé aux comptes revendeurs. <Link href="/admin" className="underline">Ouvrir l&apos;administration</Link>.</Notice>
+      </div>
+    );
+  }
+
+  if (viewer.status !== "active" || !viewer.pricingProfile) {
+    return (
+      <div className="container-page max-w-2xl py-8">
+        {nav}
+        <div className="mt-6">
+          <Notice tone="warning" title={viewer.status === "suspended" ? "Compte suspendu" : "Compte en attente de validation"}>
+            {viewer.status === "suspended"
+              ? "Ce compte est suspendu. Contactez Naaqati pour plus d'informations."
+              : "Votre compte doit être validé par Naaqati (pays de résidence et profil tarifaire) avant de pouvoir consulter les tarifs et commander."}
+          </Notice>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container-page py-6">
+      <p className="mb-2 text-sm text-encre/70">
+        {viewer.companyName ?? viewer.contactName ?? viewer.email} · Profil : {viewer.pricingProfile === "reseller_fr" ? "revendeur résidant en France" : "revendeur résidant en Algérie"}
+      </p>
+      {nav}
+      <div className="mt-6">{children}</div>
+    </div>
+  );
+}

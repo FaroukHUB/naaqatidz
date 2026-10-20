@@ -4,7 +4,7 @@ import * as q from "@/lib/sanity/queries";
 import { mapCatalogSkus, mapImage, mapProductView, mapSummary, type RawImage, type RawProduct } from "./mappers";
 import type { CategoryView, ContentSource, HomeView, RichPageView, SiteSettingsView } from "./types";
 
-const cached = { next: { revalidate: 3600, tags: [SANITY_CACHE_TAG] } } as const;
+const cached = { next: { revalidate: 3600, tags: [SANITY_CACHE_TAG] } };
 
 async function fetchCached<T>(query: string, params: Record<string, unknown> = {}): Promise<T> {
   return sanityClient.fetch<T>(query, params, cached);

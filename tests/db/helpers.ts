@@ -10,6 +10,12 @@ import { mapSettings, mapShipping, type CommerceStore, type SettingsRow, type Sh
 export const ADMIN_URL = process.env.TEST_DATABASE_URL ?? "postgres://postgres@127.0.0.1:54329/postgres";
 
 export async function createTestDatabase(name: string): Promise<pg.Pool> {
+  // Mode « sur place » : base Supabase réelle et vierge (ex. image supabase/postgres) déjà dotée du schéma auth.
+  if (process.env.TEST_DB_IN_PLACE === "1") {
+    const pool = new pg.Pool({ connectionString: ADMIN_URL, max: 8 });
+    await applyMigrations(pool);
+    return pool;
+  }
   const admin = new pg.Client({ connectionString: ADMIN_URL });
   await admin.connect();
   await admin.query(`drop database if exists ${name} with (force)`);
@@ -19,11 +25,15 @@ export async function createTestDatabase(name: string): Promise<pg.Pool> {
   url.pathname = `/${name}`;
   const pool = new pg.Pool({ connectionString: url.toString(), max: 8 });
   await pool.query(readFileSync("tests/db/supabase-stub.sql", "utf8"));
+  await applyMigrations(pool);
+  return pool;
+}
+
+async function applyMigrations(pool: pg.Pool) {
   const dir = "supabase/migrations";
   for (const file of readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()) {
     await pool.query(readFileSync(join(dir, file), "utf8"));
   }
-  return pool;
 }
 
 /** Exécute fn avec un rôle Supabase (anon / authenticated avec un utilisateur / service_role). */
@@ -37,7 +47,11 @@ export async function asRole<T>(
   try {
     await client.query("begin");
     await client.query(`set local role ${role}`);
-    await client.query("select set_config('request.jwt.claims', $1, true)", [JSON.stringify(userId ? { sub: userId, role } : { role })]);
+    // Les deux formes lues par auth.uid() selon les versions de Supabase.
+    await client.query("select set_config('request.jwt.claims', $1, true), set_config('request.jwt.claim.sub', $2, true)", [
+      JSON.stringify(userId ? { sub: userId, role } : { role }),
+      userId ?? "",
+    ]);
     const result = await fn(client);
     await client.query("commit");
     return result;
@@ -50,7 +64,7 @@ export async function asRole<T>(
 }
 
 export async function createUser(pool: pg.Pool, email: string, profile: Record<string, unknown> = {}): Promise<string> {
-  const { rows } = await pool.query<{ id: string }>("insert into auth.users (email) values ($1) returning id", [email]);
+  const { rows } = await pool.query<{ id: string }>("insert into auth.users (id, email) values (gen_random_uuid(), $1) returning id", [email]);
   const id = rows[0]!.id;
   const keys = Object.keys(profile);
   if (keys.length) {

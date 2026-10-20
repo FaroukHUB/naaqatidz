@@ -2,8 +2,8 @@ import "server-only";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { mapSettings, mapShipping, type CommerceStore, type SettingsRow } from "./commerce-store";
 
-function check<T>(res: { data: T; error: { message: string } | null }): T {
-  if (res.error) throw new Error(`Base de données : ${res.error.message}`);
+function check<T>(res: { data: T | null; error: { message: string } | null }): T {
+  if (res.error || res.data === null) throw new Error(`Base de données : ${res.error?.message ?? "réponse vide"}`);
   return res.data;
 }
 
@@ -12,8 +12,8 @@ export function createSupabaseStore(): CommerceStore {
   const db = createServiceClient();
   return {
     async getSettings() {
-      const row = check(await db.from("commerce_settings").select("*").eq("id", 1).single());
-      return mapSettings(row as SettingsRow);
+      const row = check<SettingsRow>(await db.from("commerce_settings").select("*").eq("id", 1).single());
+      return mapSettings(row);
     },
     async getShippingConfig() {
       const [wilayas, communes, methods, rates] = await Promise.all([
@@ -36,7 +36,7 @@ export function createSupabaseStore(): CommerceStore {
       return { orderId: row.order_id, reference: row.reference, created: row.created };
     },
     async consumeRateLimit(bucket, keyHash, windowSeconds, max) {
-      const ok = check(await db.rpc("consume_rate_limit", { p_bucket: bucket, p_key_hash: keyHash, p_window_seconds: windowSeconds, p_max: max }));
+      const ok = check<boolean>(await db.rpc("consume_rate_limit", { p_bucket: bucket, p_key_hash: keyHash, p_window_seconds: windowSeconds, p_max: max }));
       return ok === true;
     },
   };

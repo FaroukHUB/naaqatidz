@@ -35,7 +35,7 @@ export const aboutPage = defineType({
   ],
 });
 
-export const LEGAL_PAGES = [
+export const LEGAL_PAGES = [ // synchronisé avec src/lib/legal-pages.ts
   { title: "Mentions légales", value: "mentions-legales" },
   { title: "Conditions générales de vente", value: "conditions-generales-de-vente" },
   { title: "Livraison et retours", value: "livraison-et-retours" },
