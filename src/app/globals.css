@@ -108,3 +108,21 @@
     @apply border-b border-sable/60 px-2 py-2 align-top;
   }
 }
+
+/* --- Typographie de marque --- */
+/* Titres de section : Cinzel (lettrage du logo), capitales espacées. */
+@utility title-display {
+  @apply font-display font-normal uppercase tracking-[0.14em] text-marron;
+}
+/* Sur-titre court au-dessus d'un titre. */
+@utility kicker {
+  @apply font-sans text-xs font-semibold uppercase tracking-[0.3em] text-titre;
+}
+/* Accroches : Times italique (descriptions françaises des étiquettes). */
+@utility tagline {
+  @apply font-serif italic text-marron;
+}
+/* Filet doré centré (« filets » des packagings). */
+@utility rule-gold {
+  @apply mx-auto h-px w-24 bg-gradient-to-r from-transparent via-kraft to-transparent;
+}

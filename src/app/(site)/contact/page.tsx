@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { content } from "@/lib/catalog";
+import { PageHeader } from "@/components/site/PageHeader";
 
 export const revalidate = 3600;
 
@@ -14,11 +15,11 @@ export default async function ContactPage() {
   const s = await content.getSettings();
   const hasAny = s && (s.phone || s.email || s.whatsapp || s.address);
   return (
-    <div className="container-page py-10">
-      <h1 className="text-4xl">Contact</h1>
-      {s?.contactIntro && <p className="mt-4 max-w-prose whitespace-pre-line text-lg">{s.contactIntro}</p>}
+    <>
+    <PageHeader kicker="Naaqati" title="Contact" intro={s?.contactIntro ?? "Une question sur nos produits ou votre commande ? Écrivez-nous."} />
+    <div className="container-page max-w-3xl py-12">
       {hasAny ? (
-        <dl className="mt-8 grid max-w-xl gap-4">
+        <dl className="card mx-auto grid max-w-xl gap-5 p-6">
           {s.phone && (<div><dt className="field-label">Téléphone</dt><dd><a className="text-lg text-titre underline" href={`tel:${s.phone.replace(/\s/g, "")}`}>{s.phone}</a></dd></div>)}
           {s.whatsapp && (<div><dt className="field-label">WhatsApp</dt><dd><a className="text-lg text-titre underline" href={`https://wa.me/${s.whatsapp.replace(/\D/g, "")}`} rel="noopener noreferrer" target="_blank">{s.whatsapp}</a></dd></div>)}
           {s.email && (<div><dt className="field-label">Email</dt><dd><a className="text-lg text-titre underline" href={`mailto:${s.email}`}>{s.email}</a></dd></div>)}
@@ -26,9 +27,10 @@ export default async function ContactPage() {
           {s.openingHours && (<div><dt className="field-label">Horaires</dt><dd className="whitespace-pre-line">{s.openingHours}</dd></div>)}
         </dl>
       ) : (
-        <p className="mt-6 text-lg">Les coordonnées de contact seront bientôt disponibles.</p>
+        <p className="tagline text-center text-xl">Les coordonnées de contact seront bientôt disponibles.</p>
       )}
-      <p className="mt-10 text-sm text-encre/70">Revendeur ? Rendez-vous dans l&apos;<Link className="underline" href="/revendeur">espace revendeur</Link> ou contactez-nous pour demander un accès.</p>
+      <p className="mt-10 text-center text-sm text-encre/70">Revendeur ? Rendez-vous dans l&apos;<Link className="underline" href="/revendeur">espace revendeur</Link> ou contactez-nous pour demander un accès.</p>
     </div>
+    </>
   );
 }

@@ -5,8 +5,9 @@ export const metadata: Metadata = { title: "Panier", robots: { index: false, fol
 
 export default function CartPage() {
   return (
-    <div className="container-page py-8">
-      <h1 className="text-4xl">Votre panier</h1>
+    <div className="container-page py-10">
+      <p className="kicker text-center">Boutique</p>
+      <h1 className="title-display mt-2 text-center text-3xl">Votre panier</h1>
       <CartView />
     </div>
   );

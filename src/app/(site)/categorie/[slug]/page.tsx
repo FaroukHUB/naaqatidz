@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { content } from "@/lib/catalog";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ProductCard } from "@/components/site/ProductCard";
+import { PageHeader } from "@/components/site/PageHeader";
 
 export const revalidate = 3600;
 
@@ -31,14 +32,14 @@ export default async function CategoryPage({ params }: Props) {
   const products = await content.listProducts({ categorySlug: category.slug });
 
   return (
+    <>
+    <PageHeader kicker="Boutique" title={category.title} intro={category.description} />
     <div className="container-page py-8">
       <Breadcrumbs items={[{ label: "Accueil", href: "/" }, { label: "Boutique", href: "/boutique" }, { label: category.title }]} />
-      <h1 className="text-4xl">{category.title}</h1>
-      {category.description && <p className="mt-3 max-w-prose text-lg">{category.description}</p>}
       {products.length === 0 ? (
         <p className="mt-8">Aucun produit dans cette catégorie pour le moment.</p>
       ) : (
-        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
           {products.map((p) => (
             <li key={p.id}><ProductCard product={p} headingLevel="h2" /></li>
           ))}
@@ -46,7 +47,7 @@ export default async function CategoryPage({ params }: Props) {
       )}
       {categories.length > 1 && (
         <nav aria-label="Autres catégories" className="mt-12">
-          <h2 className="mb-3 text-2xl">Autres catégories</h2>
+          <h2 className="title-display mb-4 text-xl">Autres catégories</h2>
           <ul className="flex flex-wrap gap-2">
             {categories.filter((c) => c.slug !== category.slug).map((c) => (
               <li key={c.id}>
@@ -57,5 +58,6 @@ export default async function CategoryPage({ params }: Props) {
         </nav>
       )}
     </div>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { content } from "@/lib/catalog";
 import { LEGAL_PAGES } from "@/lib/legal-pages";
 import { RichText } from "@/components/ui/RichText";
+import { PageHeader } from "@/components/site/PageHeader";
 
 export const revalidate = 3600;
 export const dynamicParams = false;
@@ -32,14 +33,16 @@ export default async function InfoPage({ params }: Props) {
   if (!def) notFound();
   const page = await content.getLegalPage(slug);
   return (
-    <div className="container-page py-10">
-      <h1 className="text-4xl">{page?.title ?? def.title}</h1>
+    <>
+    <PageHeader kicker="Informations" title={page?.title ?? def.title} />
+    <div className="container-page max-w-3xl py-12">
       {page?.body?.length ? (
-        <div className="mt-6"><RichText value={page.body} /></div>
+        <RichText value={page.body} />
       ) : (
-        <p className="mt-6 text-lg">Cette page est en cours de rédaction. Pour toute question, contactez-nous.</p>
+        <p className="tagline text-center text-xl">Cette page est en cours de rédaction. Pour toute question, contactez-nous.</p>
       )}
       {page?.updatedAt && <p className="mt-10 text-sm text-encre/60">Mise à jour : {new Date(page.updatedAt).toLocaleDateString("fr-FR")}</p>}
     </div>
+    </>
   );
 }

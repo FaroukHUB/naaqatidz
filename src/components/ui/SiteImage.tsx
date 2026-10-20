@@ -5,8 +5,9 @@ import type { ImageView } from "@/lib/catalog/types";
 export function SiteImage({ image, sizes, priority, className }: { image: ImageView | null; sizes: string; priority?: boolean; className?: string }) {
   if (!image) {
     return (
-      <div className={`flex aspect-square w-full items-center justify-center bg-creme text-sm text-marron/60 ${className ?? ""}`} aria-hidden="true">
-        Photo à venir
+      <div className={`flex aspect-square w-full items-center justify-center bg-creme ${className ?? ""}`} aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/naaqati-calligraphie.webp" alt="" width={803} height={220} className="w-1/2 opacity-30" />
       </div>
     );
   }
