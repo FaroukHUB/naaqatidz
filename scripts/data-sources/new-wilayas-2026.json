@@ -1,0 +1,109 @@
+{
+  "$comment": "Hand-written overrides for the 11 wilayas created by loi n° 26-06 du 4 avril 2026 (JORADP n° 25 du 5 avril 2026) and numbered 59-69 by décret présidentiel n° 26-206 du 25 mai 2026 (JORADP n° 40). Commune lists are ONS 2021 codes (prefix = former wilaya of the 58-wilaya map). Each list was cross-checked against two independent machine-readable compilations (geoalgeria @ ce8083d, syscli/algeria @ 7789ea9, both claiming JORADP n° 25 as their source) and against at least one press / reference source listed per entry. JORADP itself (joradp.dz) could not be fetched from the research environment, so the official PDF was NOT read directly.",
+  "researchedAt": "2026-10-20",
+  "legalBasis": [
+    { "label": "Loi n° 26-06 du 4 avril 2026 (JORADP n° 25 du 5 avril 2026)", "url": "https://www.joradp.dz/FTP/jo-francais/2026/F2026025.pdf" },
+    { "label": "Décret présidentiel n° 26-206 du 25 mai 2026 (JORADP n° 40)", "url": "https://www.joradp.dz/FTP/jo-francais/2026/F2026040.pdf" }
+  ],
+  "commonSources": [
+    "https://github.com/yasserstudio/geoalgeria/blob/ce8083dd18e5b77bd2c48790f3874aaa34ffbdee/packages/dataset/data/algeria.json",
+    "https://github.com/syscli/algeria/blob/7789ea926e7c0751f33775ecf558fa026e2ee81b/data/communes.csv",
+    "https://dzbuild.com/fr/blog/algeria-69-wilayas-list-2026",
+    "https://algerie-eco.com/2026/06/05/algerie-les-noms-et-les-numeros-des-nouvelles-wilayas-fixes/",
+    "https://www.ennaharonline.com/%D8%AA%D8%B9%D8%B1%D9%81_-%D8%B9%D9%84%D9%89_-%D8%A3%D8%B3%D9%85%D8%A7%D8%A1_-%D9%88%D8%A3%D8%B1%D9%82%D8%A7%D9%85-%D8%A7%D9%84%D9%88%D9%84%D8%A7%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D9%80-11-%D8%A7%D9%84/"
+  ],
+  "wilayas": [
+    {
+      "code": "59", "nameFr": "Aflou", "nameAr": "أفلو", "formerCode": "03", "capitalCommune": "0319",
+      "communes": ["0319", "0310", "0311", "0312", "0313", "0314", "0315", "0316", "0317", "0321", "0322", "0324"],
+      "status": "confirmed",
+      "sources": ["https://www.upgrowth.dz/creation-entreprise-aflou-2026", "https://en.wikipedia.org/wiki/Aflou_Province"],
+      "notes": "Art. 52 bis 10 de la loi 84-09 modifiée. Nom arabe: 'أفلو' (presse arabophone et syscli/JO) ; geoalgeria écrit 'آفلو'."
+    },
+    {
+      "code": "60", "nameFr": "Barika", "nameAr": "بريكة", "formerCode": "05", "capitalCommune": "0542",
+      "communes": ["0542", "0514", "0515", "0518", "0529", "0543", "0555", "0556"],
+      "status": "confirmed",
+      "sources": ["https://fr.wikipedia.org/wiki/Wilaya_de_Barika", "https://www.expressdz.dz/2026/04/06/la-loi-relative-a-la-nouvelle-organisation-territoriale-de-lalgerie-publiee-au-journal-officiel/"],
+      "notes": "Le texte de loi écrit 'Amdoukal' pour M'Doukal (0555)."
+    },
+    {
+      "code": "61", "nameFr": "El Kantara", "nameAr": "القنطرة", "formerCode": "07", "capitalCommune": "0717",
+      "communes": ["0717", "0703", "0718", "0719", "0720"],
+      "status": "confirmed",
+      "sources": ["https://www.majliselouma.dz/storage/laws/e85b1a8d-e3b1-4b7b-bfd1-c9811e06fe6c.pdf", "https://en.wikipedia.org/wiki/El_Kantara_Province"],
+      "notes": "Projet de loi (Conseil de la Nation), art. 52 bis 12 ; liste identique dans les deux jeux de données."
+    },
+    {
+      "code": "62", "nameFr": "Bir El Ater", "nameAr": "بئر العاتر", "formerCode": "12", "capitalCommune": "1202",
+      "communes": ["1202", "1209", "1215", "1228"],
+      "status": "confirmed",
+      "sources": ["https://www.majliselouma.dz/storage/laws/e85b1a8d-e3b1-4b7b-bfd1-c9811e06fe6c.pdf", "https://dzbuild.com/fr/blog/algeria-69-wilayas-list-2026"],
+      "notes": "Projet de loi, art. 52 bis 13."
+    },
+    {
+      "code": "63", "nameFr": "El Aricha", "nameAr": "العريشة", "formerCode": "13", "capitalCommune": "1332",
+      "communes": ["1332", "1310", "1341", "1343"],
+      "status": "confirmed",
+      "sources": ["https://en.wikipedia.org/wiki/El_Aricha_Province", "https://mohammedgadiri.blogspot.com/2025/11/actualites-informations-generales-sport.html"],
+      "notes": ""
+    },
+    {
+      "code": "64", "nameFr": "Ksar Chellala", "nameAr": "قصر الشلالة", "formerCode": "14", "capitalCommune": "1429",
+      "communes": ["1429", "1409", "1430", "1435", "1439", "1440"],
+      "status": "confirmed",
+      "sources": ["https://www.elmoudjahid.dz/fr/regions/ksar-chellala-la-64%E1%B5%89-wilaya-de-l-algerie-le-debut-d-une-nouvelle-ere-257168", "https://en.wikipedia.org/wiki/Ksar_Chellala_Province"],
+      "notes": ""
+    },
+    {
+      "code": "65", "nameFr": "Aïn Ouessara", "nameAr": "عين وسارة", "formerCode": "17", "capitalCommune": "1731",
+      "communes": ["1731", "1708", "1709", "1711", "1719", "1720", "1721", "1732", "1733", "1735"],
+      "status": "confirmed",
+      "sources": ["https://dzbuild.com/fr/blog/algeria-69-wilayas-list-2026"],
+      "notes": "Une seule source de presse/blog en plus des deux jeux de données (qui concordent). Orthographe usuelle aussi 'Aïn Oussera'."
+    },
+    {
+      "code": "66", "nameFr": "Messaad", "nameAr": "مسعد", "formerCode": "17", "capitalCommune": "1717",
+      "communes": ["1717", "1706", "1707", "1718", "1722", "1724", "1729", "1734"],
+      "status": "confirmed",
+      "sources": ["https://dzbuild.com/fr/blog/algeria-69-wilayas-list-2026"],
+      "notes": "Une seule source de presse/blog en plus des deux jeux de données (qui concordent). Ne pas confondre avec la commune Djebel Messaad (2847, wilaya 68)."
+    },
+    {
+      "code": "67", "nameFr": "Ksar El Boukhari", "nameAr": "قصر البخاري", "formerCode": "26", "capitalCommune": "2635",
+      "communes": ["2635", "2603", "2604", "2608", "2610", "2617", "2618", "2622", "2623", "2625", "2631", "2632", "2638", "2640", "2641", "2642", "2649", "2651", "2657", "2658", "2664"],
+      "status": "confirmed",
+      "sources": ["https://dzbuild.com/fr/blog/algeria-69-wilayas-list-2026", "https://en.wikipedia.org/wiki/Ksar_El_Boukhari_Province"],
+      "notes": ""
+    },
+    {
+      "code": "68", "nameFr": "Bou Saâda", "nameAr": "بوسعادة", "formerCode": "28", "capitalCommune": "2820",
+      "communes": ["2820", "2807", "2808", "2821", "2822", "2823", "2824", "2825", "2826", "2827", "2833", "2834", "2835", "2836", "2837", "2838", "2839", "2841", "2842", "2843", "2844", "2846", "2847"],
+      "status": "confirmed",
+      "sources": ["https://dzbuild.com/fr/blog/algeria-69-wilayas-list-2026", "https://en.wikipedia.org/wiki/Bou_Sa%C3%A2da_Province"],
+      "notes": ""
+    },
+    {
+      "code": "69", "nameFr": "El Abiodh Sidi Cheikh", "nameAr": "الأبيض سيدي الشيخ", "formerCode": "32", "capitalCommune": "3207",
+      "communes": ["3207", "3208", "3209", "3213", "3214", "3216", "3219"],
+      "status": "confirmed",
+      "sources": ["https://en.wikipedia.org/wiki/El_Abiodh_Sidi_Cheikh_Province"],
+      "notes": "Le nombre (7) est confirmé par Wikipédia ; la liste nominative ne l'est que par les deux jeux de données (concordants)."
+    }
+  ],
+  "unresolved": [
+    {
+      "commune": "3021",
+      "nameFr": "El Borma",
+      "keptWilayaCode": "30",
+      "alternativeWilayaCode": "55",
+      "issue": "Rattachement à Ouargla (30) ou Touggourt (55) depuis la loi 19-12 (2019). geoalgeria (code ONS 2021 = 3021, wilaya 30) et fr.wikipedia (Touggourt = 13 communes) => Ouargla ; syscli/algeria (cite la loi 19-12, Touggourt = 14 communes) et en.wikipedia (6 daïras / 14 communes) => Touggourt. Texte officiel (JORADP 2019 n° 78) non consulté. Sans lien avec la réforme 2026.",
+      "sources": [
+        "https://github.com/syscli/algeria/blob/7789ea926e7c0751f33775ecf558fa026e2ee81b/data/communes.csv",
+        "https://fr.wikipedia.org/wiki/Liste_des_communes_de_la_wilaya_de_Touggourt",
+        "https://en.wikipedia.org/wiki/Touggourt_Province",
+        "https://www.joradp.dz/FTP/jo-francais/2019/F2019078.pdf"
+      ]
+    }
+  ]
+}
