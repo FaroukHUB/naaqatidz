@@ -2,7 +2,7 @@ import "server-only";
 import type { PortableTextBlock } from "next-sanity";
 import { ABOUT_PROPOSED_PARAGRAPHS } from "./about-text";
 import { mapCatalogSkus, mapProductView, mapSummary, type RawProduct } from "./mappers";
-import type { CategoryView, ContentSource } from "./types";
+import type { CategoryView, ContentSource, SubcategoryView } from "./types";
 
 /**
  * DONNÉES DE DÉMONSTRATION — développement local uniquement (Sanity non configuré).
@@ -17,6 +17,11 @@ const categories: CategoryView[] = [
   { id: "demo-cat-lait", slug: "lait", title: "Lait de chamelle (démo)", description: "Catégorie de démonstration.", image: null, seo },
 ];
 
+const subcategories: SubcategoryView[] = [
+  { id: "demo-sub-1", slug: "savons-solides", title: "Savons solides (démo)", description: null, category: { slug: "savons", title: "Savons (démo)" }, seo },
+  { id: "demo-sub-2", slug: "coffrets", title: "Coffrets (démo)", description: null, category: { slug: "savons", title: "Savons (démo)" }, seo },
+];
+
 type DemoProduct = RawProduct & { hasVariants: boolean; presentationNote?: string | null };
 const cat = (slug: string) => {
   const c = categories.find((x) => x.slug === slug)!;
@@ -26,12 +31,12 @@ const cat = (slug: string) => {
 const products: DemoProduct[] = [
   {
     id: "demo-p1", slug: "savon-demo-a", title: "Savon démo A", shortDescription: "Produit fictif pour tester le parcours d'achat.",
-    salesMode: "online", category: cat("savons"), hasVariants: false,
+    salesMode: "online", category: cat("savons"), subcategory: { slug: "savons-solides", title: "Savons solides (démo)" }, hasVariants: false,
     skus: [{ sku: "DEMO-SAV-A", label: null, priceDzd: 1000, netContent: "100 g (fictif)", saleable: true, shippingWeightG: 150 }],
   },
   {
     id: "demo-p2", slug: "savon-demo-b", title: "Savon démo B", shortDescription: "Produit fictif avec variantes.",
-    salesMode: "online", category: cat("savons"), hasVariants: true,
+    salesMode: "online", category: cat("savons"), subcategory: { slug: "coffrets", title: "Coffrets (démo)" }, hasVariants: true,
     skus: [
       { sku: "DEMO-SAV-B-S", label: "Petit format (fictif)", priceDzd: 600, netContent: null, saleable: true, shippingWeightG: 90 },
       { sku: "DEMO-SAV-B-L", label: "Grand format (fictif)", priceDzd: 1500, netContent: null, saleable: true, shippingWeightG: 260 },
@@ -59,8 +64,13 @@ export const demoSource: ContentSource = {
   kind: "demo",
   async listCategories() { return categories; },
   async getCategory(slug) { return categories.find((c) => c.slug === slug) ?? null; },
+  async listSubcategories(categorySlug) { return subcategories.filter((s) => s.category.slug === categorySlug); },
+  async getSubcategory(categorySlug, slug) { return subcategories.find((s) => s.category.slug === categorySlug && s.slug === slug) ?? null; },
   async listProducts(opts) {
-    return products.filter((p) => !opts?.categorySlug || p.category?.slug === opts.categorySlug).map(mapSummary);
+    return products
+      .filter((p) => !opts?.categorySlug || p.category?.slug === opts.categorySlug)
+      .filter((p) => !opts?.subcategorySlug || p.subcategory?.slug === opts.subcategorySlug)
+      .map(mapSummary);
   },
   async getProduct(slug) {
     const p = products.find((x) => x.slug === slug);

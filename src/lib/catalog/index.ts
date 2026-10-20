@@ -8,6 +8,8 @@ const emptySource: ContentSource = {
   kind: "empty",
   listCategories: async () => [],
   getCategory: async () => null,
+  listSubcategories: async () => [],
+  getSubcategory: async () => null,
   listProducts: async () => [],
   getProduct: async () => null,
   getHome: async () => null,

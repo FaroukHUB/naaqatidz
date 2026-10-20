@@ -28,6 +28,7 @@ export interface RawProduct {
   archived?: boolean | null;
   image?: RawImage | null;
   category?: { slug: string; title: string } | null;
+  subcategory?: { slug: string; title: string } | null;
   skus?: RawSku[] | null;
 }
 
@@ -73,6 +74,7 @@ export function mapSummary(raw: RawProduct): ProductSummary {
     shortDescription: raw.shortDescription ?? null,
     image: mapImage(raw.image),
     category: raw.category ?? null,
+    subcategory: raw.subcategory?.slug ? raw.subcategory : null,
     salesMode: salesModeOf(raw),
     fromPriceDzdMinor: prices.length ? Math.min(...prices) : null,
     hasSaleableSku: skus.some((s) => s.saleable),

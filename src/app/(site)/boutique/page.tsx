@@ -40,11 +40,28 @@ export default async function ShopPage() {
             </div>
           </div>
         ) : (
-          <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-            {products.map((p) => (
-              <li key={p.id}><ProductCard product={p} headingLevel="h2" /></li>
-            ))}
-          </ul>
+          <div className="space-y-14">
+            {[
+              ...categories.map((c) => ({ key: c.id, title: c.title, href: `/categorie/${c.slug}`, items: products.filter((p) => p.category?.slug === c.slug) })),
+              { key: "autres", title: "Autres produits", href: null, items: products.filter((p) => !categories.some((c) => c.slug === p.category?.slug)) },
+            ]
+              .filter((g) => g.items.length > 0)
+              .map((g) => (
+                <section key={g.key} aria-labelledby={`cat-${g.key}`}>
+                  <div className="mb-5 flex items-baseline justify-between gap-4 border-b border-sable pb-3">
+                    <h2 id={`cat-${g.key}`} className="title-display text-lg sm:text-xl">{g.title}</h2>
+                    {g.href && (
+                      <Link href={g.href} className="shrink-0 text-sm font-semibold text-titre underline-offset-4 hover:underline">Voir la catégorie</Link>
+                    )}
+                  </div>
+                  <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+                    {g.items.slice(0, 8).map((p) => (
+                      <li key={p.id}><ProductCard product={p} /></li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+          </div>
         )}
       </div>
     </>

@@ -74,6 +74,9 @@ export default async function ProductPage({ params }: Props) {
           { label: "Accueil", href: "/" },
           { label: "Boutique", href: "/boutique" },
           ...(product.category ? [{ label: product.category.title, href: `/categorie/${product.category.slug}` }] : []),
+          ...(product.category && product.subcategory
+            ? [{ label: product.subcategory.title, href: `/categorie/${product.category.slug}/${product.subcategory.slug}` }]
+            : []),
           { label: product.title },
         ]}
       />

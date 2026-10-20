@@ -6,6 +6,7 @@ export const structure: StructureResolver = (S) =>
     .items([
       S.listItem().title("Produits").schemaType("product").child(S.documentTypeList("product").title("Produits").defaultOrdering([{ field: "sortOrder", direction: "asc" }])),
       S.listItem().title("Catégories").schemaType("category").child(S.documentTypeList("category").title("Catégories").defaultOrdering([{ field: "sortOrder", direction: "asc" }])),
+      S.listItem().title("Sous-catégories").schemaType("subcategory").child(S.documentTypeList("subcategory").title("Sous-catégories").defaultOrdering([{ field: "sortOrder", direction: "asc" }])),
       S.divider(),
       S.listItem().title("Page d'accueil").id("homePage").child(S.document().schemaType("homePage").documentId("homePage")),
       S.listItem().title("Page « À propos »").id("aboutPage").child(S.document().schemaType("aboutPage").documentId("aboutPage")),

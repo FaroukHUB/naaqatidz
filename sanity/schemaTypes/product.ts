@@ -26,6 +26,28 @@ export const product = defineType({
     }),
     defineField({ name: "category", title: "Catégorie", type: "reference", to: [{ type: "category" }], group: "general", validation: (r) => r.required() }),
     defineField({
+      name: "subcategory",
+      title: "Sous-catégorie",
+      type: "reference",
+      to: [{ type: "subcategory" }],
+      group: "general",
+      description: "Facultatif. Seules les sous-catégories de la catégorie choisie sont proposées.",
+      options: {
+        filter: ({ document }) => {
+          const cat = (document as { category?: { _ref?: string } }).category?._ref;
+          return cat ? { filter: "category._ref == $cat", params: { cat } } : { filter: "false" };
+        },
+      },
+      validation: (r) =>
+        r.custom(async (value: { _ref?: string } | undefined, ctx) => {
+          if (!value?._ref) return true;
+          const cat = (ctx.document as { category?: { _ref?: string } } | undefined)?.category?._ref;
+          const client = ctx.getClient({ apiVersion: "2026-10-01" });
+          const parent = await client.fetch<string | null>("*[_id in [$id, 'drafts.' + $id]][0].category._ref", { id: value._ref });
+          return parent && parent === cat ? true : "Cette sous-catégorie n'appartient pas à la catégorie choisie.";
+        }),
+    }),
+    defineField({
       name: "images",
       title: "Photos",
       type: "array",

@@ -23,6 +23,15 @@ export interface CategoryView {
   seo: SeoView;
 }
 
+export interface SubcategoryView {
+  id: string;
+  slug: string;
+  title: string;
+  description: string | null;
+  category: { slug: string; title: string };
+  seo: SeoView;
+}
+
 export type SalesMode = "online" | "presentation";
 
 export interface SkuView {
@@ -40,6 +49,7 @@ export interface ProductSummary {
   shortDescription: string | null;
   image: ImageView | null;
   category: { slug: string; title: string } | null;
+  subcategory: { slug: string; title: string } | null;
   salesMode: SalesMode;
   /** Prix public le plus bas parmi les références vendables (DZD, unités mineures). */
   fromPriceDzdMinor: number | null;
@@ -96,7 +106,9 @@ export interface ContentSource {
   readonly kind: "sanity" | "demo" | "empty";
   listCategories(): Promise<CategoryView[]>;
   getCategory(slug: string): Promise<CategoryView | null>;
-  listProducts(opts?: { categorySlug?: string }): Promise<ProductSummary[]>;
+  listSubcategories(categorySlug: string): Promise<SubcategoryView[]>;
+  getSubcategory(categorySlug: string, slug: string): Promise<SubcategoryView | null>;
+  listProducts(opts?: { categorySlug?: string; subcategorySlug?: string }): Promise<ProductSummary[]>;
   getProduct(slug: string): Promise<ProductView | null>;
   getHome(): Promise<HomeView | null>;
   getAbout(): Promise<RichPageView | null>;

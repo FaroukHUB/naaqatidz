@@ -2,7 +2,7 @@ import "server-only";
 import { sanityClient, sanityFreshClient, SANITY_CACHE_TAG } from "@/lib/sanity/client";
 import * as q from "@/lib/sanity/queries";
 import { mapCatalogSkus, mapImage, mapProductView, mapSummary, type RawImage, type RawProduct } from "./mappers";
-import type { CategoryView, ContentSource, HomeView, RichPageView, SiteSettingsView } from "./types";
+import type { CategoryView, ContentSource, HomeView, RichPageView, SiteSettingsView, SubcategoryView } from "./types";
 
 const cached = { next: { revalidate: 3600, tags: [SANITY_CACHE_TAG] } };
 
@@ -30,8 +30,19 @@ export const sanitySource: ContentSource = {
   async getCategory(slug) {
     return mapCategory(await fetchCached<RawCategory | null>(q.categoryBySlugQuery, { slug }));
   },
+  async listSubcategories(categorySlug) {
+    const raw = await fetchCached<SubcategoryView[]>(q.subcategoriesQuery, { categorySlug });
+    return raw.map((c) => ({ ...c, description: c.description ?? null }));
+  },
+  async getSubcategory(categorySlug, slug) {
+    const raw = await fetchCached<SubcategoryView | null>(q.subcategoryQuery, { categorySlug, slug });
+    return raw ? { ...raw, description: raw.description ?? null } : null;
+  },
   async listProducts(opts) {
-    const raw = await fetchCached<RawProduct[]>(q.productsQuery, { categorySlug: opts?.categorySlug ?? null });
+    const raw = await fetchCached<RawProduct[]>(q.productsQuery, {
+      categorySlug: opts?.categorySlug ?? null,
+      subcategorySlug: opts?.subcategorySlug ?? null,
+    });
     return raw.map(mapSummary);
   },
   async getProduct(slug) {
@@ -68,11 +79,13 @@ export const sanitySource: ContentSource = {
     const raw = await fetchCached<{
       categories: { slug: string; updatedAt: string }[];
       products: { slug: string; updatedAt: string }[];
+      subcategories: { slug: string; category: string; updatedAt: string }[];
       legal: { slug: string; updatedAt: string }[];
       about: string | null;
     }>(q.sitemapQuery);
     return [
       ...raw.categories.map((c) => ({ path: `/categorie/${c.slug}`, updatedAt: c.updatedAt })),
+      ...raw.subcategories.map((c) => ({ path: `/categorie/${c.category}/${c.slug}`, updatedAt: c.updatedAt })),
       ...raw.products.map((p) => ({ path: `/produit/${p.slug}`, updatedAt: p.updatedAt })),
       ...raw.legal.map((l) => ({ path: `/informations/${l.slug}`, updatedAt: l.updatedAt })),
       ...(raw.about ? [{ path: "/a-propos", updatedAt: raw.about }] : []),

@@ -14,6 +14,7 @@ const PRODUCT_SUMMARY = `{
   "id": _id, "slug": slug.current, title, shortDescription, salesMode,
   "image": images[0]${IMAGE},
   "category": category->{ "slug": slug.current, title },
+  "subcategory": subcategory->{ "slug": slug.current, title },
   ${SKUS}
 }`;
 
@@ -25,14 +26,27 @@ export const categoryBySlugQuery = defineQuery(`*[_type == "category" && hidden 
   "id": _id, "slug": slug.current, title, description, "image": image${IMAGE}, ${SEO}
 }`);
 
-export const productsQuery = defineQuery(`*[${VISIBLE_PRODUCT} && (!defined($categorySlug) || category->slug.current == $categorySlug)]
-  | order(category->sortOrder asc, sortOrder asc, title asc) ${PRODUCT_SUMMARY}`);
+export const productsQuery = defineQuery(`*[${VISIBLE_PRODUCT}
+  && (!defined($categorySlug) || category->slug.current == $categorySlug)
+  && (!defined($subcategorySlug) || subcategory->slug.current == $subcategorySlug)]
+  | order(category->sortOrder asc, subcategory->sortOrder asc, sortOrder asc, title asc) ${PRODUCT_SUMMARY}`);
+
+const SUBCATEGORY = `{
+  "id": _id, "slug": slug.current, title, description,
+  "category": category->{ "slug": slug.current, title }, ${SEO}
+}`;
+
+export const subcategoriesQuery = defineQuery(`*[_type == "subcategory" && defined(slug.current) && category->slug.current == $categorySlug && category->hidden != true]
+  | order(sortOrder asc, title asc) ${SUBCATEGORY}`);
+
+export const subcategoryQuery = defineQuery(`*[_type == "subcategory" && slug.current == $slug && category->slug.current == $categorySlug && category->hidden != true][0] ${SUBCATEGORY}`);
 
 export const productBySlugQuery = defineQuery(`*[${VISIBLE_PRODUCT} && slug.current == $slug][0]{
   "id": _id, "slug": slug.current, title, shortDescription, salesMode, presentationNote, hasVariants,
   "image": images[0]${IMAGE},
   "images": images[]${IMAGE},
   "category": category->{ "slug": slug.current, title },
+  "subcategory": subcategory->{ "slug": slug.current, title },
   description, ingredients, usage, ${SEO}, "updatedAt": _updatedAt,
   ${SKUS}
 }`);
@@ -67,6 +81,7 @@ export const skusByCodeQuery = defineQuery(`*[_type == "product" && (sku in $sku
 export const sitemapQuery = defineQuery(`{
   "categories": *[_type == "category" && hidden != true && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt },
   "products": *[${VISIBLE_PRODUCT}]{ "slug": slug.current, "updatedAt": _updatedAt },
+  "subcategories": *[_type == "subcategory" && defined(slug.current) && category->hidden != true]{ "slug": slug.current, "category": category->slug.current, "updatedAt": _updatedAt },
   "legal": *[_type == "legalPage" && defined(slug)]{ slug, "updatedAt": _updatedAt },
   "about": *[_type == "aboutPage" && _id == "aboutPage"][0]._updatedAt
 }`);
