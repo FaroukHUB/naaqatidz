@@ -4,8 +4,9 @@ Site en français pour Naaqati (produits du Sahara) : boutique publique pour les
 paiement à la livraison), espace revendeur authentifié avec tarification selon le pays de résidence validé,
 administration accessible depuis un ordinateur ou un téléphone.
 
-Déploiement : projet Vercel `naaqati` (branche de production : `claude/relaxed-bardeen-x4m1xa`), projet Supabase `naaqati`
-(eu-west-3). Pour finir le schéma de production, exécuter une fois `supabase/manuel/terminer-schema-production.sql`
+Déploiement : https://naaqati-phi.vercel.app — projet Vercel `naaqati` (branche de production :
+`claude/relaxed-bardeen-x4m1xa`, fonctions à Paris `cdg1`), projet Supabase `naaqati` (eu-west-3),
+projet Sanity `Naaqati` (`u1f8tdc6`, dataset public `production`, Studio sur `/studio`). Pour finir le schéma de production, exécuter une fois `supabase/manuel/terminer-schema-production.sql`
 dans Supabase → SQL Editor. Aucune commande n'est transmise à un service externe.
 
 ## Architecture
