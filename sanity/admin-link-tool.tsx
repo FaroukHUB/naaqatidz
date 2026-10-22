@@ -14,6 +14,10 @@ function AdminLink() {
           Ouvrir le tableau de bord
         </a>
       </p>
+      <p style={{ marginTop: "1rem", fontSize: "0.9rem", opacity: 0.75 }}>
+        Le tableau de bord demande la connexion avec votre compte administrateur du site (email et mot de passe du site,
+        différents de votre compte Sanity). Une fois connecté, vous le restez.
+      </p>
     </div>
   );
 }
