@@ -22,23 +22,22 @@ export default async function ResellerLayout({ children }: { children: React.Rea
     </nav>
   );
 
-  if (viewer.role === "admin") {
-    return (
-      <div className="container-page py-8">
-        <Notice title="Compte administrateur">L&apos;espace revendeur est réservé aux comptes revendeurs. <Link href="/admin" className="underline">Ouvrir l&apos;administration</Link>.</Notice>
-      </div>
-    );
-  }
+  // Un administrateur qui arrive ici est envoyé directement dans l'administration.
+  if (viewer.role === "admin" && viewer.status === "active") redirect("/admin");
 
   if (viewer.status !== "active" || !viewer.pricingProfile) {
     return (
       <div className="container-page max-w-2xl py-8">
         {nav}
         <div className="mt-6">
-          <Notice tone="warning" title={viewer.status === "suspended" ? "Compte suspendu" : "Compte en attente de validation"}>
-            {viewer.status === "suspended"
-              ? "Ce compte est suspendu. Contactez Naaqati pour plus d'informations."
-              : "Votre compte doit être validé par Naaqati (pays de résidence et profil tarifaire) avant de pouvoir consulter les tarifs et commander."}
+          <Notice tone="warning" title={viewer.status === "suspended" ? "Compte suspendu" : "Compte pas encore activé"}>
+            <p>Vous êtes connecté avec <strong>{viewer.email}</strong>.</p>
+            <p className="mt-1">
+              {viewer.status === "suspended"
+                ? "Ce compte est suspendu. Contactez Naaqati pour plus d'informations."
+                : "Ce compte n'a pas encore été activé par Naaqati : les tarifs et la commande ne sont pas disponibles."}
+            </p>
+            <form action={signOut} className="mt-3"><button className="btn-secondary btn-small">Se connecter avec un autre compte</button></form>
           </Notice>
         </div>
       </div>
