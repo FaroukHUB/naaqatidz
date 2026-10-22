@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
+import { RESELLER_SCOPE } from "./scopes";
 
 /**
  * Panier stocké dans le navigateur : uniquement des SKU, des quantités et des libellés d'affichage.
@@ -97,4 +98,18 @@ export function useCart(scope: string) {
   );
 }
 
-export const RETAIL_SCOPE = "particulier";
+export { RETAIL_SCOPE, RESELLER_SCOPE } from "./scopes";
+
+const RESELLER_OWNER_KEY = "naaqati:panier:revendeur:compte";
+
+/** Vide le panier revendeur si un autre compte revendeur s'est connecté sur ce navigateur. */
+export function claimResellerCart(userId: string) {
+  try {
+    if (window.localStorage.getItem(RESELLER_OWNER_KEY) !== userId) {
+      window.localStorage.setItem(RESELLER_OWNER_KEY, userId);
+      write(RESELLER_SCOPE, []);
+    }
+  } catch {
+    // Stockage indisponible : le panier reste propre à l'onglet.
+  }
+}

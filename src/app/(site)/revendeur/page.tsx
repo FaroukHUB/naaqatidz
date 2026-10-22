@@ -1,4 +1,5 @@
 import { getViewer } from "@/lib/server/viewer";
+import { RESELLER_SCOPE } from "@/components/cart/scopes";
 import { resellerCatalog } from "@/lib/server/reseller";
 import { QuickOrder } from "./QuickOrder";
 
@@ -14,7 +15,7 @@ export default async function ResellerCatalogPage() {
           ? `Tarifs revendeurs France${currency ? ` en ${currency}` : " (devise à confirmer)"}. Une référence sans tarif configuré ne peut pas être commandée.`
           : "Prix publics en DZD. Pas de limite de quantité ; les commandes sont réparties automatiquement en cartons."}
       </p>
-      <QuickOrder rows={rows} scope={`revendeur-${viewer.userId}`} />
+      <QuickOrder rows={rows} scope={RESELLER_SCOPE} />
     </div>
   );
 }

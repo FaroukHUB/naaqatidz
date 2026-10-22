@@ -129,7 +129,7 @@ export function QuickOrder({ rows, scope }: { rows: ResellerCatalogRow[]; scope:
         <div className="container-page flex items-center justify-between gap-3 py-2 sm:py-3">
           <div role="status" aria-live="polite">
             {message ? (
-              <p className="text-sm font-semibold text-succes sm:text-base">{message} <Link href="/revendeur/panier" className="underline">Voir le panier</Link></p>
+              <p className="text-sm font-semibold text-succes sm:text-base">{message}</p>
             ) : (
               <>
                 <p className="text-xs text-encre/70 sm:text-sm">{totalUnits} article{totalUnits > 1 ? "s" : ""}</p>
@@ -137,7 +137,12 @@ export function QuickOrder({ rows, scope }: { rows: ResellerCatalogRow[]; scope:
               </>
             )}
           </div>
-          <button type="button" className="btn-primary shrink-0 px-5 sm:px-8" onClick={addAll} disabled={totalUnits === 0}>Ajouter au panier</button>
+          {totalUnits === 0 && cart.count > 0 ? (
+            // Rien de nouveau à ajouter : on mène directement à la validation de la commande.
+            <Link href="/revendeur/panier" className="btn-primary shrink-0 px-5 sm:px-8">Passer la commande ({cart.count}) →</Link>
+          ) : (
+            <button type="button" className="btn-primary shrink-0 px-5 sm:px-8" onClick={addAll} disabled={totalUnits === 0}>Ajouter au panier</button>
+          )}
         </div>
       </div>
     </div>

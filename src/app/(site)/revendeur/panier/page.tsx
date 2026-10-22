@@ -1,4 +1,5 @@
 import { getViewer } from "@/lib/server/viewer";
+import { RESELLER_SCOPE } from "@/components/cart/scopes";
 import { createSupabaseStore } from "@/lib/server/supabase-store";
 import { franceMissingTerms } from "@/lib/domain/quote";
 import { listWilayas } from "@/lib/geo/algeria";
@@ -20,7 +21,7 @@ export default async function ResellerCartPage() {
     <div>
       <h1 className="text-3xl">Panier revendeur</h1>
       <ResellerCheckout
-        scope={`revendeur-${viewer.userId}`}
+        scope={RESELLER_SCOPE}
         profile={viewer.pricingProfile}
         wilayas={listWilayas().map((w) => ({ code: w.code, name: w.nameFr }))}
         defaults={{ contactName: viewer.contactName ?? "", companyName: viewer.companyName ?? "", phone: viewer.phone ?? "" }}
