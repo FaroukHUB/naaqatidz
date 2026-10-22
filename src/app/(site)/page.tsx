@@ -82,7 +82,10 @@ export default async function HomePage() {
         // paysage est montrée entière (16:9) et le texte passe dessous, pour ne pas la recadrer à l'excès.
         <section className={`relative isolate overflow-hidden bg-ilaji text-white md:flex md:aspect-video ${portraitOnMobile ? "flex min-h-[88svh]" : ""}`}>
           <div className={portraitOnMobile ? "absolute inset-0" : "relative aspect-video w-full md:absolute md:inset-0 md:aspect-auto"}>
-            <HeroVideo desktop={home!.heroVideo.desktop} mobile={home!.heroVideo.mobile} poster={home!.heroPoster ? `${home!.heroPoster.url}?w=1920&auto=format` : null} />
+            <HeroVideo desktop={home!.heroVideo.desktop} mobile={home!.heroVideo.mobile} poster={home!.heroPoster ? `${home!.heroPoster.url}?w=1920&auto=format` : null} desktopImage={Boolean(home!.heroDesktopImage)} />
+            {home!.heroDesktopImage && (
+              <SiteImage image={home!.heroDesktopImage} sizes="100vw" className="absolute inset-0 hidden h-full w-full object-cover md:block" />
+            )}
             {/* Voile pour la lisibilité : par le bas sur téléphone, par la gauche sur ordinateur */}
             <div aria-hidden="true" className={`absolute inset-0 md:block md:bg-gradient-to-r md:from-ilaji/80 md:from-10% md:via-ilaji/30 md:via-45% md:to-transparent md:to-70% ${portraitOnMobile ? "bg-gradient-to-t from-ilaji/90 via-ilaji/35 to-transparent" : "hidden"}`} />
           </div>

@@ -15,9 +15,10 @@ type RawCategory = Omit<CategoryView, "image" | "seo"> & { image: RawImage | nul
 type RawRich = Omit<RichPageView, "image"> & { image: RawImage | null };
 
 type RawVideo = { url?: string | null; mimeType?: string | null } | null;
-type RawHome = Omit<HomeView, "heroImage" | "heroPoster" | "heroVideo" | "heroButtons" | "storyImage" | "featured"> & {
+type RawHome = Omit<HomeView, "heroImage" | "heroPoster" | "heroDesktopImage" | "heroVideo" | "heroButtons" | "storyImage" | "featured"> & {
   heroImage: RawImage | null;
   heroPoster: RawImage | null;
+  heroDesktopImage: RawImage | null;
   heroVideoDesktop: RawVideo;
   heroVideoMobile: RawVideo;
   heroButtonLabel: string | null;
@@ -82,6 +83,7 @@ export const sanitySource: ContentSource = {
       ...rest,
       heroImage: mapImage(raw.heroImage),
       heroPoster: mapImage(raw.heroPoster),
+      heroDesktopImage: mapImage(raw.heroDesktopImage),
       heroVideo: { desktop: mapVideo(heroVideoDesktop), mobile: mapVideo(heroVideoMobile) },
       heroButtons: [
         mapLink(heroButtonLabel ?? "Découvrir la boutique", heroButtonLink ?? "/boutique"),

@@ -15,14 +15,20 @@ export const homePage = defineType({
     defineField({ name: "heroImage", title: "Photo principale", type: "imageWithAlt", description: "Utilisée seulement s'il n'y a pas de vidéo." }),
     defineField({
       name: "heroVideoDesktop",
-      title: "Vidéo d'en-tête — ordinateur",
+      title: "Vidéo d'en-tête (paysage 16:9)",
       type: "file",
       options: { accept: "video/mp4,video/webm" },
-      description: "Format paysage (16:9), MP4, sans son, idéalement moins de 8 Mo. Le texte s'affiche à gauche : gardez le côté gauche de l'image dégagé.",
+      description: "MP4, sans son, idéalement moins de 8 Mo. Affichée en entier sur téléphone (texte dessous) et sur ordinateur (texte à gauche), sauf si une photo ordinateur est choisie ci-dessous.",
+    }),
+    defineField({
+      name: "heroDesktopImage",
+      title: "Photo d'en-tête — ordinateur (facultatif)",
+      type: "imageWithAlt",
+      description: "Si elle est renseignée, elle remplace la vidéo sur ordinateur ; le téléphone garde la vidéo. Format paysage 16:9 conseillé (ex. 1920 × 1080), côté gauche dégagé pour le texte.",
     }),
     defineField({
       name: "heroVideoMobile",
-      title: "Vidéo d'en-tête — téléphone",
+      title: "Vidéo verticale pour téléphone (facultatif, 9:16)",
       type: "file",
       options: { accept: "video/mp4,video/webm" },
       description: "Format portrait (9:16), MP4, sans son, idéalement moins de 5 Mo. Le texte s'affiche en bas. Si vide, la vidéo ordinateur est affichée en entier avec le texte dessous. Ne mettez ici qu'une vidéo verticale.",

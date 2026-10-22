@@ -8,14 +8,20 @@ import type { VideoView } from "@/lib/catalog/types";
  * La source est choisie côté navigateur pour ne télécharger qu'une seule vidéo ; rien n'est
  * lu si le visiteur a demandé à réduire les animations (l'image d'attente reste affichée).
  */
-export function HeroVideo({ desktop, mobile, poster }: { desktop: VideoView | null; mobile: VideoView | null; poster: string | null }) {
+export function HeroVideo({ desktop, mobile, poster, desktopImage = false }: {
+  desktop: VideoView | null;
+  mobile: VideoView | null;
+  poster: string | null;
+  /** Une photo remplace la vidéo sur ordinateur : rien n'y est téléchargé. */
+  desktopImage?: boolean;
+}) {
   const ref = useRef<HTMLVideoElement>(null);
   const [source, setSource] = useState<VideoView | null>(null);
 
   useEffect(() => {
     const wide = window.matchMedia("(min-width: 768px)");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const pick = () => setSource(reduced.matches ? null : wide.matches ? (desktop ?? mobile) : (mobile ?? desktop));
+    const pick = () => setSource(reduced.matches || (wide.matches && desktopImage) ? null : wide.matches ? (desktop ?? mobile) : (mobile ?? desktop));
     pick();
     wide.addEventListener("change", pick);
     reduced.addEventListener("change", pick);
@@ -23,7 +29,7 @@ export function HeroVideo({ desktop, mobile, poster }: { desktop: VideoView | nu
       wide.removeEventListener("change", pick);
       reduced.removeEventListener("change", pick);
     };
-  }, [desktop, mobile]);
+  }, [desktop, mobile, desktopImage]);
 
   useEffect(() => {
     const video = ref.current;
@@ -36,7 +42,7 @@ export function HeroVideo({ desktop, mobile, poster }: { desktop: VideoView | nu
   return (
     <video
       ref={ref}
-      className="absolute inset-0 h-full w-full object-cover"
+      className={`absolute inset-0 h-full w-full object-cover ${desktopImage ? "md:hidden" : ""}`}
       poster={poster ?? undefined}
       muted
       loop

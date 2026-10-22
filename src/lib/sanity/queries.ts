@@ -56,6 +56,7 @@ export const homeQuery = defineQuery(`*[_type == "homePage" && _id == "homePage"
   "heroVideoDesktop": heroVideoDesktop.asset->{ url, mimeType },
   "heroVideoMobile": heroVideoMobile.asset->{ url, mimeType },
   "heroPoster": heroPoster${IMAGE},
+  "heroDesktopImage": heroDesktopImage${IMAGE},
   heroButtonLabel, heroButtonLink, heroSecondaryLabel, heroSecondaryLink,
   storyTitle, storyText, "storyImage": storyImage${IMAGE}, ${SEO},
   "featured": featuredProducts[]->[${VISIBLE_PRODUCT}]${PRODUCT_SUMMARY}

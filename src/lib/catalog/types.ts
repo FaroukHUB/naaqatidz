@@ -86,6 +86,8 @@ export interface HomeView {
   heroImage: ImageView | null;
   heroVideo: { desktop: VideoView | null; mobile: VideoView | null };
   heroPoster: ImageView | null;
+  /** Photo affichée à la place de la vidéo sur ordinateur. */
+  heroDesktopImage: ImageView | null;
   heroButtons: LinkView[];
   storyTitle: string | null;
   storyText: string | null;

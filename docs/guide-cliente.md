@@ -31,6 +31,9 @@ Studio → **Page d'accueil** :
    **second bouton** facultatif.
 5. Cliquez sur **Publier**.
 
+**Photo sur ordinateur, vidéo sur téléphone** : remplissez **Photo d'en-tête — ordinateur** (16:9 conseillé, côté
+gauche dégagé). La photo remplace alors la vidéo sur ordinateur ; le téléphone garde la vidéo.
+
 Sans vidéo, l'ancien en-tête illustré reste affiché.
 
 ## Produits

@@ -80,7 +80,7 @@ export const demoSource: ContentSource = {
     return {
       heroTitle: "Produits du Sahara",
       heroText: "Aperçu de démonstration : les textes et photos définitifs seront saisis dans Sanity Studio.",
-      heroImage: null, heroVideo: { desktop: null, mobile: null }, heroPoster: null, heroButtons: [], storyTitle: "Notre histoire", storyText: ABOUT_PROPOSED_PARAGRAPHS[2] ?? null, storyImage: null,
+      heroImage: null, heroVideo: { desktop: null, mobile: null }, heroPoster: null, heroDesktopImage: null, heroButtons: [], storyTitle: "Notre histoire", storyText: ABOUT_PROPOSED_PARAGRAPHS[2] ?? null, storyImage: null,
       featured: products.slice(0, 3).map(mapSummary), seo,
     };
   },
