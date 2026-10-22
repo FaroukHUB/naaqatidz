@@ -52,7 +52,12 @@ export const productBySlugQuery = defineQuery(`*[${VISIBLE_PRODUCT} && slug.curr
 }`);
 
 export const homeQuery = defineQuery(`*[_type == "homePage" && _id == "homePage"][0]{
-  heroTitle, heroText, "heroImage": heroImage${IMAGE}, storyTitle, storyText, "storyImage": storyImage${IMAGE}, ${SEO},
+  heroTitle, heroText, "heroImage": heroImage${IMAGE},
+  "heroVideoDesktop": heroVideoDesktop.asset->{ url, mimeType },
+  "heroVideoMobile": heroVideoMobile.asset->{ url, mimeType },
+  "heroPoster": heroPoster${IMAGE},
+  heroButtonLabel, heroButtonLink, heroSecondaryLabel, heroSecondaryLink,
+  storyTitle, storyText, "storyImage": storyImage${IMAGE}, ${SEO},
   "featured": featuredProducts[]->[${VISIBLE_PRODUCT}]${PRODUCT_SUMMARY}
 }`);
 

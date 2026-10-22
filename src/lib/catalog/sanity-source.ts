@@ -2,7 +2,7 @@ import "server-only";
 import { sanityClient, sanityFreshClient, SANITY_CACHE_TAG } from "@/lib/sanity/client";
 import * as q from "@/lib/sanity/queries";
 import { mapCatalogSkus, mapImage, mapProductView, mapSummary, type RawImage, type RawProduct } from "./mappers";
-import type { CategoryView, ContentSource, HomeView, RichPageView, SiteSettingsView, SubcategoryView } from "./types";
+import type { CategoryView, ContentSource, HomeView, LinkView, RichPageView, SiteSettingsView, SubcategoryView, VideoView } from "./types";
 
 const cached = { next: { revalidate: 3600, tags: [SANITY_CACHE_TAG] } };
 
@@ -12,6 +12,30 @@ async function fetchCached<T>(query: string, params: Record<string, unknown> = {
 
 type RawCategory = Omit<CategoryView, "image" | "seo"> & { image: RawImage | null; seo: CategoryView["seo"] };
 type RawRich = Omit<RichPageView, "image"> & { image: RawImage | null };
+
+type RawVideo = { url?: string | null; mimeType?: string | null } | null;
+type RawHome = Omit<HomeView, "heroImage" | "heroPoster" | "heroVideo" | "heroButtons" | "storyImage" | "featured"> & {
+  heroImage: RawImage | null;
+  heroPoster: RawImage | null;
+  heroVideoDesktop: RawVideo;
+  heroVideoMobile: RawVideo;
+  heroButtonLabel: string | null;
+  heroButtonLink: string | null;
+  heroSecondaryLabel: string | null;
+  heroSecondaryLink: string | null;
+  storyImage: RawImage | null;
+  featured: RawProduct[] | null;
+};
+
+function mapVideo(raw: RawVideo): VideoView | null {
+  return raw?.url ? { url: raw.url, mimeType: raw.mimeType ?? "video/mp4" } : null;
+}
+
+/** Liens saisis dans le Studio : page du site (« /… ») ou adresse https uniquement. */
+function mapLink(label: string | null | undefined, href: string | null | undefined): LinkView | null {
+  if (!label?.trim() || !href) return null;
+  return /^\/(?!\/)/.test(href) || href.startsWith("https://") ? { label: label.trim(), href } : null;
+}
 
 function mapCategory(raw: RawCategory | null): CategoryView | null {
   return raw ? { ...raw, description: raw.description ?? null, image: mapImage(raw.image) } : null;
@@ -50,11 +74,21 @@ export const sanitySource: ContentSource = {
     return raw ? mapProductView(raw) : null;
   },
   async getHome() {
-    const raw = await fetchCached<
-      (Omit<HomeView, "heroImage" | "storyImage" | "featured"> & { heroImage: RawImage | null; storyImage: RawImage | null; featured: RawProduct[] | null }) | null
-    >(q.homeQuery);
+    const raw = await fetchCached<RawHome | null>(q.homeQuery);
     if (!raw) return null;
-    return { ...raw, heroImage: mapImage(raw.heroImage), storyImage: mapImage(raw.storyImage), featured: (raw.featured ?? []).map(mapSummary) };
+    const { heroVideoDesktop, heroVideoMobile, heroButtonLabel, heroButtonLink, heroSecondaryLabel, heroSecondaryLink, ...rest } = raw;
+    return {
+      ...rest,
+      heroImage: mapImage(raw.heroImage),
+      heroPoster: mapImage(raw.heroPoster),
+      heroVideo: { desktop: mapVideo(heroVideoDesktop), mobile: mapVideo(heroVideoMobile) },
+      heroButtons: [
+        mapLink(heroButtonLabel ?? "Découvrir la boutique", heroButtonLink ?? "/boutique"),
+        mapLink(heroSecondaryLabel, heroSecondaryLink),
+      ].filter((l): l is LinkView => l !== null),
+      storyImage: mapImage(raw.storyImage),
+      featured: (raw.featured ?? []).map(mapSummary),
+    };
   },
   async getAbout() {
     return mapRich(await fetchCached<RawRich | null>(q.aboutQuery));

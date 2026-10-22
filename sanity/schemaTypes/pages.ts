@@ -1,5 +1,10 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+function linkRule(value: string | undefined): true | string {
+  if (!value) return true;
+  return /^\/(?!\/)/.test(value) || /^https:\/\//.test(value) ? true : "Le lien doit commencer par « / » (page du site) ou « https:// ».";
+}
+
 export const homePage = defineType({
   name: "homePage",
   title: "Page d'accueil",
@@ -7,7 +12,31 @@ export const homePage = defineType({
   fields: [
     defineField({ name: "heroTitle", title: "Titre principal", type: "string" }),
     defineField({ name: "heroText", title: "Texte d'introduction", type: "text", rows: 3 }),
-    defineField({ name: "heroImage", title: "Photo principale", type: "imageWithAlt" }),
+    defineField({ name: "heroImage", title: "Photo principale", type: "imageWithAlt", description: "Utilisée seulement s'il n'y a pas de vidéo." }),
+    defineField({
+      name: "heroVideoDesktop",
+      title: "Vidéo d'en-tête — ordinateur",
+      type: "file",
+      options: { accept: "video/mp4,video/webm" },
+      description: "Format paysage (16:9), MP4, sans son, idéalement moins de 8 Mo. Le texte s'affiche à gauche : gardez le côté gauche de l'image dégagé.",
+    }),
+    defineField({
+      name: "heroVideoMobile",
+      title: "Vidéo d'en-tête — téléphone",
+      type: "file",
+      options: { accept: "video/mp4,video/webm" },
+      description: "Format portrait (9:16), MP4, sans son, idéalement moins de 5 Mo. Le texte s'affiche en bas. Si vide, la vidéo ordinateur est recadrée.",
+    }),
+    defineField({
+      name: "heroPoster",
+      title: "Image d'attente de la vidéo",
+      type: "imageWithAlt",
+      description: "Affichée pendant le chargement, et à la place de la vidéo pour les visiteurs qui ont désactivé les animations. Conseillé : une image extraite de la vidéo.",
+    }),
+    defineField({ name: "heroButtonLabel", title: "Bouton principal — texte", type: "string", initialValue: "Découvrir la boutique" }),
+    defineField({ name: "heroButtonLink", title: "Bouton principal — lien", type: "string", initialValue: "/boutique", description: "Adresse d'une page du site (ex. /boutique, /categorie/soin-de-la-peau) ou lien complet https://…", validation: (r) => r.custom(linkRule) }),
+    defineField({ name: "heroSecondaryLabel", title: "Second bouton — texte (facultatif)", type: "string" }),
+    defineField({ name: "heroSecondaryLink", title: "Second bouton — lien", type: "string", validation: (r) => r.custom(linkRule) }),
     defineField({
       name: "featuredProducts",
       title: "Produits mis en avant",

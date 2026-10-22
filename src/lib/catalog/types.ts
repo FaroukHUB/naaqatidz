@@ -70,10 +70,23 @@ export interface ProductView extends ProductSummary {
   updatedAt: string | null;
 }
 
+export interface VideoView {
+  url: string;
+  mimeType: string;
+}
+
+export interface LinkView {
+  label: string;
+  href: string;
+}
+
 export interface HomeView {
   heroTitle: string | null;
   heroText: string | null;
   heroImage: ImageView | null;
+  heroVideo: { desktop: VideoView | null; mobile: VideoView | null };
+  heroPoster: ImageView | null;
+  heroButtons: LinkView[];
   storyTitle: string | null;
   storyText: string | null;
   storyImage: ImageView | null;

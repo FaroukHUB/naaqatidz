@@ -6,6 +6,7 @@ import { publicEnv } from "@/lib/env";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { HeroVideo } from "@/components/site/HeroVideo";
 import { Dunes, SectionTitle, Sparkle } from "@/components/brand/Decor";
 
 export const revalidate = 3600;
@@ -56,6 +57,8 @@ export default async function HomePage() {
   const featured = home?.featured.length ? home.featured : featuredFallback.slice(0, 4);
   const heroTitle = home?.heroTitle ?? DEFAULTS.heroTitle;
   const heroText = home?.heroText ?? DEFAULTS.heroText;
+  const heroVideo = home && (home.heroVideo.desktop || home.heroVideo.mobile);
+  const heroButtons = home?.heroButtons ?? [];
 
   return (
     <>
@@ -72,7 +75,31 @@ export default async function HomePage() {
         }}
       />
 
-      {/* Héros */}
+      {/* Héros vidéo (si une vidéo est publiée dans le Studio), sinon héros illustré */}
+      {heroVideo ? (
+        <section className="relative isolate flex min-h-[88svh] overflow-hidden bg-ilaji text-white md:min-h-[min(85vh,56.25vw)]">
+          <HeroVideo desktop={home!.heroVideo.desktop} mobile={home!.heroVideo.mobile} poster={home!.heroPoster ? `${home!.heroPoster.url}?w=1920&auto=format` : null} />
+          {/* Voile pour la lisibilité : par le bas sur téléphone, par la gauche sur ordinateur */}
+          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ilaji/90 via-ilaji/35 to-transparent md:bg-gradient-to-r md:from-ilaji/80 md:from-10% md:via-ilaji/30 md:via-45% md:to-transparent md:to-70%" />
+          <div className="container-page relative z-10 flex w-full items-end pb-24 pt-24 md:items-center md:pb-28">
+            <div className="max-w-xl text-left">
+              <Image src="/brand/naaqati-calligraphie-or.webp" alt="" width={803} height={220} priority unoptimized className="h-auto w-40 sm:w-52" />
+              <h1 className="title-display mt-5 text-3xl leading-tight text-white sm:text-5xl">{heroTitle}</h1>
+              <p className="mt-4 max-w-md text-lg leading-relaxed text-encre-claire">{heroText}</p>
+              {heroButtons.length > 0 && (
+                <div className="mt-8 flex flex-wrap gap-3">
+                  {heroButtons.map((b, i) => (
+                    <Link key={b.href + i} href={b.href} className={i === 0 ? "btn-primary px-7" : "btn border border-white/70 px-7 text-white hover:bg-white/10"}>
+                      {b.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <Dunes className="absolute inset-x-0 bottom-0 z-10 h-14 w-full md:h-20" />
+        </section>
+      ) : (
       <section className="relative overflow-hidden bg-creme">
         <Sparkle className="absolute left-[8%] top-10 text-kraft/60" size={14} />
         <Sparkle className="absolute right-[12%] top-16 text-or" size={18} />
@@ -110,6 +137,7 @@ export default async function HomePage() {
         </div>
         <Dunes className="absolute inset-x-0 bottom-0 h-28 w-full md:h-40" />
       </section>
+      )}
 
       {/* Univers de la marque */}
       <section className="container-page py-16" aria-labelledby="titre-univers">
