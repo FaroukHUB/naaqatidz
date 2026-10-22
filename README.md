@@ -6,8 +6,9 @@ administration accessible depuis un ordinateur ou un téléphone.
 
 Déploiement : https://naaqati-phi.vercel.app — projet Vercel `naaqati` (branche de production :
 `claude/relaxed-bardeen-x4m1xa`, fonctions à Paris `cdg1`), projet Supabase `naaqati` (eu-west-3),
-projet Sanity `Naaqati` (`u1f8tdc6`, dataset public `production`, Studio sur `/studio`). Pour finir le schéma de production, exécuter une fois `supabase/manuel/terminer-schema-production.sql`
-dans Supabase → SQL Editor. Aucune commande n'est transmise à un service externe.
+projet Sanity `Naaqati` (`u1f8tdc6`, dataset public `production`, Studio sur `/studio`). Le schéma Supabase de
+production est complet (fonctions, RLS, droits ; conseillers de sécurité vérifiés le 22/10/2026). Aucune commande
+n'est transmise à un service externe.
 
 ## Architecture
 

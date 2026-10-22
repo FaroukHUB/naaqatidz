@@ -358,8 +358,6 @@ begin
   values (p_bucket, p_key_hash, v_window, 1)
   on conflict (bucket, key_hash, window_start) do update set hits = r.hits + 1
   returning hits into v_hits;
-  -- Nettoyage opportuniste des fenêtres expirées.
-  delete from public.rate_limits where window_start < now() - interval '2 days';
   return v_hits <= p_max;
 end;
 $$;
