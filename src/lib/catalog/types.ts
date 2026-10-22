@@ -37,6 +37,8 @@ export type SalesMode = "online" | "presentation";
 export interface SkuView {
   sku: string;
   label: string | null;
+  /** Senteur (gamme Al ʿĀtir) ; null pour les produits sans parfum. */
+  scent: string | null;
   priceDzdMinor: number | null;
   netContent: string | null;
   saleable: boolean;

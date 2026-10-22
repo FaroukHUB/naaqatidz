@@ -13,6 +13,7 @@ export interface RawImage {
 export interface RawSku {
   sku: string;
   label: string | null;
+  scent?: string | null;
   priceDzd: number | null;
   netContent: string | null;
   saleable: boolean | null;
@@ -54,10 +55,16 @@ function isSaleable(product: RawProduct, sku: RawSku): boolean {
   return product.archived !== true && salesModeOf(product) === "online" && sku.saleable !== false && priceMinor(sku.priceDzd) !== null;
 }
 
+/** Libellé complet d'une variante : contenance et, le cas échéant, senteur (ex. « 25 g — Monoï »). */
+export function variantLabel(s: Pick<RawSku, "label" | "scent">): string | null {
+  return [s.label, s.scent].filter(Boolean).join(" — ") || null;
+}
+
 export function mapSkuViews(product: RawProduct): SkuView[] {
   return (product.skus ?? []).map((s) => ({
     sku: s.sku,
     label: s.label,
+    scent: s.scent ?? null,
     priceDzdMinor: priceMinor(s.priceDzd),
     netContent: s.netContent,
     saleable: isSaleable(product, s),
@@ -114,7 +121,7 @@ export function mapCatalogSkus(products: readonly RawProduct[]): CatalogSku[] {
       productId: p.id,
       productSlug: p.slug,
       productName: p.title,
-      variantLabel: s.label,
+      variantLabel: variantLabel(s),
       priceDzdMinor: priceMinor(s.priceDzd),
       shippingWeightG: weight(s.shippingWeightG),
       saleable: isSaleable(p, s),

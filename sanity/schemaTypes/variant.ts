@@ -9,6 +9,12 @@ export const variant = defineType({
   fields: [
     defineField({ name: "label", title: "Nom de la variante", type: "string", description: "Ex. « 100 g », « Lot de 2 ».", validation: (r) => r.required() }),
     defineField({
+      name: "scent",
+      title: "Senteur",
+      type: "string",
+      description: "Uniquement pour les produits parfumés (ex. « Monoï »). Créez une variante par contenance et par senteur, chacune avec son SKU.",
+    }),
+    defineField({
       name: "sku",
       title: "SKU (référence unique)",
       type: "string",
@@ -42,9 +48,9 @@ export const variant = defineType({
       v?.saleable && !v.priceDzd ? "Une variante en vente doit avoir un prix public." : true,
     ),
   preview: {
-    select: { title: "label", sku: "sku", price: "priceDzd", saleable: "saleable" },
-    prepare: ({ title, sku, price, saleable }) => ({
-      title: `${title ?? "Variante"}${saleable === false ? " (vente désactivée)" : ""}`,
+    select: { title: "label", scent: "scent", sku: "sku", price: "priceDzd", saleable: "saleable" },
+    prepare: ({ title, scent, sku, price, saleable }) => ({
+      title: `${title ?? "Variante"}${scent ? ` — ${scent}` : ""}${saleable === false ? " (vente désactivée)" : ""}`,
       subtitle: `${sku ?? "sans SKU"} · ${price ? `${price} DZD` : "prix manquant"}`,
     }),
   },

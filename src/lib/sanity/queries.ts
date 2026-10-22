@@ -5,8 +5,8 @@ const SEO = `"seo": { "title": seo.title, "description": seo.description }`;
 const VISIBLE_PRODUCT = `_type == "product" && archived != true && defined(slug.current) && category->hidden != true`;
 
 const SKUS = `"skus": select(
-  hasVariants == true => variants[defined(sku)]{ sku, label, priceDzd, netContent, saleable, shippingWeightG },
-  defined(sku) => [{ "sku": sku, "label": null, "priceDzd": priceDzd, "netContent": netContent, "saleable": saleable, "shippingWeightG": shippingWeightG }],
+  hasVariants == true => variants[defined(sku)]{ sku, label, scent, priceDzd, netContent, saleable, shippingWeightG },
+  defined(sku) => [{ "sku": sku, "label": null, "scent": null, "priceDzd": priceDzd, "netContent": netContent, "saleable": saleable, "shippingWeightG": shippingWeightG }],
   []
 )`;
 

@@ -18,6 +18,22 @@ export function AddToCart({ product, skus }: { product: { title: string; slug: s
   const qtyId = useId();
 
   const current = skus.find((s) => s.sku === selected) ?? null;
+  const scentId = useId();
+  // Produits parfumés : une variante par contenance et par senteur. On choisit la contenance, puis la senteur.
+  const hasScents = skus.some((s) => s.scent);
+  const sizes = [...new Set(skus.map((s) => s.label ?? ""))];
+  const scentsForSize = skus.filter((s) => (s.label ?? "") === (current?.label ?? ""));
+
+  function pick(sku: string | undefined) {
+    if (!sku) return;
+    setSelected(sku);
+    setMessage(null);
+  }
+
+  function pickSize(size: string) {
+    const options = skus.filter((s) => (s.label ?? "") === size && s.saleable);
+    pick((options.find((s) => s.scent === current?.scent) ?? options[0])?.sku);
+  }
   const inCart = cart.entries.find((e) => e.sku === selected)?.quantity ?? 0;
   const remaining = Math.max(0, RETAIL_MAX - inCart);
 
@@ -32,21 +48,51 @@ export function AddToCart({ product, skus }: { product: { title: string; slug: s
       setMessage(`Vous avez déjà ${RETAIL_MAX} pièces de cette référence dans votre panier (maximum par référence).`);
       return;
     }
-    cart.add({ sku: current.sku, name: product.title, label: current.label, slug: product.slug, imageUrl: product.imageUrl }, qty, RETAIL_MAX);
+    cart.add({ sku: current.sku, name: product.title, label: [current.label, current.scent].filter(Boolean).join(" — ") || null, slug: product.slug, imageUrl: product.imageUrl }, qty, RETAIL_MAX);
     setMessage(`${qty} × ajouté${qty > 1 ? "s" : ""} au panier.`);
     setQuantity(1);
   }
 
   return (
     <div className="space-y-4">
-      {skus.length > 1 && (
+      {hasScents ? (
+        <>
+          {sizes.length > 1 && (
+            <fieldset>
+              <legend className="field-label">Contenance</legend>
+              <div className="flex flex-wrap gap-2">
+                {sizes.map((size) => {
+                  const options = skus.filter((s) => (s.label ?? "") === size && s.saleable);
+                  const active = (current?.label ?? "") === size;
+                  return (
+                    <label key={size} className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-md border px-3 py-2 ${active ? "border-symbole bg-creme" : "border-sable bg-white"} ${options.length ? "" : "cursor-not-allowed opacity-60"}`}>
+                      <input type="radio" name="contenance" checked={active} disabled={!options.length} onChange={() => pickSize(size)} />
+                      <span>{size || "Format unique"}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+          )}
+          <div>
+            <label htmlFor={scentId} className="field-label">Senteur</label>
+            <select id={scentId} className="field" value={current?.sku ?? ""} onChange={(e) => pick(e.target.value)}>
+              {scentsForSize.map((s) => (
+                <option key={s.sku} value={s.sku} disabled={!s.saleable}>
+                  {s.scent ?? "Sans senteur"}{s.saleable ? "" : " (indisponible)"}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
+      ) : skus.length > 1 && (
         <fieldset>
           <legend className="field-label">Choisissez une variante</legend>
           <div className="grid gap-2">
             {skus.map((s) => (
               <label key={s.sku} className={`flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-md border px-3 py-2 ${selected === s.sku ? "border-symbole bg-creme" : "border-sable bg-white"} ${s.saleable ? "" : "cursor-not-allowed opacity-60"}`}>
                 <span className="flex items-center gap-2">
-                  <input type="radio" name="variante" value={s.sku} checked={selected === s.sku} disabled={!s.saleable} onChange={() => { setSelected(s.sku); setMessage(null); }} />
+                  <input type="radio" name="variante" value={s.sku} checked={selected === s.sku} disabled={!s.saleable} onChange={() => pick(s.sku)} />
                   <span>{s.label}{s.netContent ? ` — ${s.netContent}` : ""}</span>
                 </span>
                 <span className="font-semibold text-titre">{s.saleable && s.priceDzdMinor !== null ? formatMoney(s.priceDzdMinor, "DZD") : "Indisponible"}</span>
@@ -58,7 +104,7 @@ export function AddToCart({ product, skus }: { product: { title: string; slug: s
       {current && current.priceDzdMinor !== null && (
         <p className="text-2xl font-semibold text-titre">
           {formatMoney(current.priceDzdMinor, "DZD")}
-          {skus.length === 1 && current.netContent && <span className="ml-2 text-base font-normal text-encre/70">{current.netContent}</span>}
+          {(skus.length === 1 || hasScents) && current.netContent && <span className="ml-2 text-base font-normal text-encre/70">{current.netContent}</span>}
         </p>
       )}
       <div className="flex items-end gap-3">
