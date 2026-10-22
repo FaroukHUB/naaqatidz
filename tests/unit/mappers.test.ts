@@ -13,9 +13,7 @@ const product = {
 
 describe("senteurs", () => {
   it("ajoute la senteur au libellé de la référence commandée", () => {
-    const [scented, plain] = mapCatalogSkus([product]);
-    expect(scented.variantLabel).toBe("25 g — Monoï");
-    expect(plain.variantLabel).toBe("25 g");
+    expect(mapCatalogSkus([product]).map((s) => s.variantLabel)).toEqual(["25 g — Monoï", "25 g"]);
   });
 
   it("expose la senteur séparément pour la fiche produit", () => {
