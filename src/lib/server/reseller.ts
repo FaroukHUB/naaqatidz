@@ -10,6 +10,7 @@ export interface ResellerCatalogRow {
   productSlug: string;
   variantLabel: string | null;
   imageUrl: string | null;
+  netContent: string | null;
   unitPriceMinor: number | null;
   currency: string | null;
 }
@@ -31,12 +32,12 @@ export async function resellerCatalog(viewer: ViewerProfile): Promise<{ rows: Re
       rows: skus.map((s) => {
         const p = prices.get(s.sku);
         const ok = p && settings.france.currency && p.currency === settings.france.currency;
-        return { sku: s.sku, productName: s.productName, productSlug: s.productSlug, variantLabel: s.variantLabel, imageUrl: s.imageUrl ?? null, unitPriceMinor: ok ? p.minor : null, currency: ok ? p.currency : null };
+        return { sku: s.sku, productName: s.productName, productSlug: s.productSlug, variantLabel: s.variantLabel, imageUrl: s.imageUrl ?? null, netContent: s.netContent ?? null, unitPriceMinor: ok ? p.minor : null, currency: ok ? p.currency : null };
       }),
     };
   }
   return {
     currency: "DZD",
-    rows: skus.map((s) => ({ sku: s.sku, productName: s.productName, productSlug: s.productSlug, variantLabel: s.variantLabel, imageUrl: s.imageUrl ?? null, unitPriceMinor: s.priceDzdMinor, currency: "DZD" })),
+    rows: skus.map((s) => ({ sku: s.sku, productName: s.productName, productSlug: s.productSlug, variantLabel: s.variantLabel, imageUrl: s.imageUrl ?? null, netContent: s.netContent ?? null, unitPriceMinor: s.priceDzdMinor, currency: "DZD" })),
   };
 }

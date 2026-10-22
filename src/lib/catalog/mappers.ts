@@ -126,6 +126,7 @@ export function mapCatalogSkus(products: readonly RawProduct[]): CatalogSku[] {
       shippingWeightG: weight(s.shippingWeightG),
       saleable: isSaleable(p, s),
       imageUrl: p.image?.url ?? null,
+      netContent: s.netContent ?? null,
     })),
   );
 }

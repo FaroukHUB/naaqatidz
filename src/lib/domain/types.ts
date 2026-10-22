@@ -25,6 +25,8 @@ export interface CatalogSku {
   /** true si la référence est commandable en ligne (vente activée, produit non archivé, mode « vente en ligne »). */
   saleable: boolean;
   imageUrl?: string | null;
+  /** Contenance affichée (ex. « 110 g »), pour l'affichage uniquement. */
+  netContent?: string | null;
 }
 
 export interface CartLineInput {
