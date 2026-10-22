@@ -9,7 +9,7 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { HeroVideo } from "@/components/site/HeroVideo";
 import { Dunes, SectionTitle, Sparkle } from "@/components/brand/Decor";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const home = await content.getHome().catch(() => null);

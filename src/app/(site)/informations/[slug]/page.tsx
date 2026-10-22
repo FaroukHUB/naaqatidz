@@ -5,7 +5,7 @@ import { LEGAL_PAGES } from "@/lib/legal-pages";
 import { RichText } from "@/components/ui/RichText";
 import { PageHeader } from "@/components/site/PageHeader";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 export const dynamicParams = false;
 
 type Props = { params: Promise<{ slug: string }> };

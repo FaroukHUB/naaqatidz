@@ -11,7 +11,7 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { ProductCard } from "@/components/site/ProductCard";
 import { AddToCart } from "./AddToCart";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string }> };
 

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { content } from "@/lib/catalog";
 import { CategoryListing } from "@/components/site/CategoryListing";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string; sous: string }> };
 

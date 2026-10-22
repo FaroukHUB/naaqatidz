@@ -3,7 +3,7 @@ import Link from "next/link";
 import { content } from "@/lib/catalog";
 import { PageHeader } from "@/components/site/PageHeader";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Contact",

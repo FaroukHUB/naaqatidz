@@ -4,7 +4,7 @@ import { RichText } from "@/components/ui/RichText";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { PageHeader } from "@/components/site/PageHeader";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await content.getAbout().catch(() => null);
