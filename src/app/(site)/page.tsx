@@ -129,7 +129,7 @@ export default async function HomePage() {
       {categories.length > 0 && (
         <section className="container-page pb-16" aria-labelledby="titre-categories">
           <SectionTitle kicker="Boutique" title="Nos catégories" id="titre-categories" />
-          <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {categories.map((c) => (
               <li key={c.id}>
                 <Link href={`/categorie/${c.slug}`} className="group block overflow-hidden rounded-2xl border border-sable bg-white transition-shadow hover:shadow-lg">

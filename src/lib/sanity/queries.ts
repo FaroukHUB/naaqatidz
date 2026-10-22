@@ -27,8 +27,8 @@ export const categoryBySlugQuery = defineQuery(`*[_type == "category" && hidden 
 }`);
 
 export const productsQuery = defineQuery(`*[${VISIBLE_PRODUCT}
-  && (!defined($categorySlug) || category->slug.current == $categorySlug)
-  && (!defined($subcategorySlug) || subcategory->slug.current == $subcategorySlug)]
+  && (!defined($categorySlug) || category->slug.current == $categorySlug || $categorySlug in extraCategories[]->slug.current)
+  && (!defined($subcategorySlug) || (subcategory->slug.current == $subcategorySlug && (!defined($categorySlug) || category->slug.current == $categorySlug)))]
   | order(category->sortOrder asc, subcategory->sortOrder asc, sortOrder asc, title asc) ${PRODUCT_SUMMARY}`);
 
 const SUBCATEGORY = `{

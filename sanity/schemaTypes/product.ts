@@ -48,6 +48,15 @@ export const product = defineType({
         }),
     }),
     defineField({
+      name: "extraCategories",
+      title: "Apparaît aussi dans",
+      type: "array",
+      group: "general",
+      of: [defineArrayMember({ type: "reference", to: [{ type: "category" }] })],
+      description: "Catégories supplémentaires où le produit est aussi présenté (ex. « Univers homme », « Promotions »). La catégorie principale reste celle ci-dessus.",
+      validation: (r) => r.unique(),
+    }),
+    defineField({
       name: "images",
       title: "Photos",
       type: "array",

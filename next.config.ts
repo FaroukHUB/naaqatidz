@@ -13,6 +13,20 @@ const nextConfig: NextConfig = {
     loader: "custom",
     loaderFile: "./src/lib/image-loader.ts",
   },
+  // Anciennes adresses de catégories (renommées le 22/10/2026).
+  async redirects() {
+    const moved: [string, string][] = [
+      ["nos-savons", "soin-de-la-peau"],
+      ["soins-des-cheveux", "soin-des-cheveux"],
+      ["soins-du-corps", "hygiene-et-bien-etre"],
+      ["visage-et-beaute", "hygiene-et-bien-etre"],
+      ["epicerie", "epicerie-naturelle"],
+    ];
+    return moved.flatMap(([from, to]) => [
+      { source: `/categorie/${from}`, destination: `/categorie/${to}`, permanent: true },
+      { source: `/categorie/${from}/:sous`, destination: `/categorie/${to}/:sous`, permanent: true },
+    ]);
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
