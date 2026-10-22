@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { updateReseller } from "@/lib/actions/admin";
+import { resetResellerPassword, updateReseller } from "@/lib/actions/admin";
+import { publicEnv } from "@/lib/env";
 import { createSessionClient } from "@/lib/supabase/server";
-import { Notice } from "@/components/ui/Notice";
 import { Flash } from "../../Flash";
+import { CredentialsCard } from "../CredentialsCard";
 
 export const metadata: Metadata = { title: "Compte revendeur" };
 
@@ -21,43 +22,64 @@ export default async function ResellerPage({ params, searchParams }: Props) {
   const { count } = await supabase.from("orders").select("id", { count: "exact", head: true }).eq("user_id", id);
   const temp = (await cookies()).get("nq_mdp_provisoire")?.value;
   const tempPassword = temp?.startsWith(`${id}:`) ? temp.slice(id.length + 1) : null;
+  const name = p.contact_name ?? p.company_name ?? p.email;
+  const message = tempPassword
+    ? [
+        `Bonjour${p.contact_name ? ` ${p.contact_name}` : ""},`,
+        "",
+        "Votre espace revendeur Naaqati est prêt.",
+        `Connexion : ${publicEnv.siteUrl}/connexion`,
+        `Email : ${p.email}`,
+        `Mot de passe : ${tempPassword}`,
+        "",
+        "Vous pourrez changer votre mot de passe dans « Mon compte ».",
+      ].join("\n")
+    : null;
 
   return (
     <div className="max-w-2xl space-y-6">
-      <Link href="/admin/revendeurs" className="text-sm underline">← Revendeurs</Link>
-      <h1 className="text-2xl">{p.email}</h1>
+      <Link href="/admin/revendeurs" className="text-sm underline">← Tous les revendeurs</Link>
+      <div>
+        <h1 className="text-2xl">{name}</h1>
+        <p className="text-sm text-encre/70">{p.email} · {count ?? 0} commande(s)</p>
+      </div>
       <Flash params={flash} />
-      {tempPassword && (
-        <Notice tone="warning" title="Mot de passe provisoire (affiché pendant 2 minutes)">
-          <p className="font-mono text-base">{tempPassword}</p>
-          <p>Transmettez-le au revendeur par un canal sûr. Il ne sera plus affiché.</p>
-        </Notice>
-      )}
-      <p className="text-sm text-encre/70">{count ?? 0} commande(s) · Pays déclaré : {p.declared_country ?? "—"}{p.validated_at ? ` · Validé le ${new Date(p.validated_at).toLocaleDateString("fr-FR")}` : ""}</p>
-      <form action={updateReseller} className="card grid gap-4 p-4">
+      {message && <CredentialsCard message={message} phone={p.phone} />}
+
+      <form action={updateReseller} className="card grid gap-4 p-5">
+        <h2 className="text-xl">Informations du compte</h2>
+        <input type="hidden" name="id" value={p.id} />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="status" className="field-label">Accès au site</label>
+            <select id="status" name="status" defaultValue={p.status} className="field">
+              <option value="active">Actif — peut se connecter et commander</option>
+              <option value="suspended">Suspendu — ne peut plus se connecter</option>
+              {p.status === "pending" && <option value="pending">À activer</option>}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="validated_country" className="field-label">Pays (détermine les prix)</label>
+            <select id="validated_country" name="validated_country" defaultValue={p.validated_country ?? "DZ"} className="field">
+              <option value="DZ">Algérie — prix publics DZD</option>
+              <option value="FR">France — tarifs France</option>
+            </select>
+          </div>
+          <div><label htmlFor="contact_name" className="field-label">Nom et prénom</label><input id="contact_name" name="contact_name" defaultValue={p.contact_name ?? ""} className="field" /></div>
+          <div><label htmlFor="company_name" className="field-label">Boutique / société</label><input id="company_name" name="company_name" defaultValue={p.company_name ?? ""} className="field" /></div>
+          <div><label htmlFor="phone" className="field-label">Téléphone / WhatsApp</label><input id="phone" name="phone" type="tel" defaultValue={p.phone ?? ""} className="field" /></div>
+        </div>
+        <div><label htmlFor="admin_notes" className="field-label">Notes internes (visibles par vous seule)</label><textarea id="admin_notes" name="admin_notes" defaultValue={p.admin_notes ?? ""} className="field" rows={3} /></div>
+        <div><button className="btn-primary btn-small">Enregistrer</button></div>
+      </form>
+
+      <form action={resetResellerPassword} className="card flex flex-wrap items-center justify-between gap-3 p-5">
         <input type="hidden" name="id" value={p.id} />
         <div>
-          <label htmlFor="status" className="field-label">Statut du compte</label>
-          <select id="status" name="status" defaultValue={p.status} className="field">
-            <option value="pending">En attente</option>
-            <option value="active">Actif</option>
-            <option value="suspended">Suspendu</option>
-          </select>
+          <h2 className="text-xl">Mot de passe</h2>
+          <p className="text-sm text-encre/70">Le revendeur l&apos;a oublié, ou vous n&apos;avez pas pu lui envoyer ? Créez-en un nouveau.</p>
         </div>
-        <div>
-          <label htmlFor="validated_country" className="field-label">Pays de résidence validé (détermine les tarifs)</label>
-          <select id="validated_country" name="validated_country" defaultValue={p.validated_country ?? ""} className="field">
-            <option value="">Non validé</option>
-            <option value="DZ">Algérie — prix publics DZD, paiement à la livraison</option>
-            <option value="FR">France — tarifs revendeurs France</option>
-          </select>
-          <p className="mt-1 text-xs text-encre/70">Le pays de résidence n&apos;est pas le pays de livraison. Vérifiez-le avant d&apos;activer le compte.</p>
-        </div>
-        <div><label htmlFor="company_name" className="field-label">Société / boutique</label><input id="company_name" name="company_name" defaultValue={p.company_name ?? ""} className="field" /></div>
-        <div><label htmlFor="contact_name" className="field-label">Nom du contact</label><input id="contact_name" name="contact_name" defaultValue={p.contact_name ?? ""} className="field" /></div>
-        <div><label htmlFor="phone" className="field-label">Téléphone</label><input id="phone" name="phone" defaultValue={p.phone ?? ""} className="field" /></div>
-        <div><label htmlFor="admin_notes" className="field-label">Notes internes</label><textarea id="admin_notes" name="admin_notes" defaultValue={p.admin_notes ?? ""} className="field" rows={3} /></div>
-        <button className="btn-primary btn-small">Enregistrer</button>
+        <button className="btn-secondary btn-small">Créer un nouveau mot de passe</button>
       </form>
     </div>
   );

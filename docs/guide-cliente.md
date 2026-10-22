@@ -63,11 +63,17 @@ Sans vidéo, l'ancien en-tête illustré reste affiché.
 
 ## Revendeurs
 
-1. Revendeurs → « Créer un compte » (email). Un mot de passe provisoire s'affiche **une seule fois** pendant 2 minutes :
-   transmettez-le par un canal sûr.
-2. Ouvrez le compte, vérifiez le **pays de résidence** (Algérie ou France), puis passez le statut à « Actif ».
-   Le pays de résidence détermine les tarifs ; ce n'est pas le pays de livraison.
-3. Un compte « En attente » ou « Suspendu » ne voit aucun tarif et ne peut pas commander.
+Tout se fait dans **Administration → Revendeurs** (`/admin/revendeurs`), sans passer par Supabase :
+
+1. Remplissez **« Ajouter un revendeur »** : email, pays (Algérie ou France), nom, boutique, téléphone.
+   Laissez le mot de passe vide pour qu'il soit créé automatiquement.
+2. Cliquez sur **« Créer le compte »** : le compte est **actif immédiatement**.
+3. Un message prêt à envoyer s'affiche (adresse du site, email, mot de passe) : **« Copier le message »** ou
+   **« Envoyer par WhatsApp »**. Il reste affiché 30 minutes.
+4. Mot de passe oublié ou perdu : ouvrez le revendeur (« Gérer ») → **« Créer un nouveau mot de passe »**.
+5. Pour bloquer un revendeur : « Gérer » → Accès au site : **Suspendu**.
+
+Le pays choisi détermine les prix : Algérie = prix publics DZD ; France = tarifs du menu « Tarifs France ».
 
 ## Avant l'ouverture
 

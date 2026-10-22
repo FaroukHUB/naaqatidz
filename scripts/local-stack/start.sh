@@ -10,9 +10,9 @@ eval "$(node "$HERE/keys.mjs" | sed 's/^/export /')"
 docker rm -f nq-supa-pg >/dev/null 2>&1 || true
 docker run -d --name nq-supa-pg -e POSTGRES_PASSWORD=postgres -p 127.0.0.1:54330:5432 supabase/postgres:17.11.0.004 >/dev/null
 until PGPASSWORD=postgres psql -h 127.0.0.1 -p 54330 -U postgres -c "select 1" >/dev/null 2>&1; do sleep 2; done; sleep 3
-PGPASSWORD=postgres psql -h 127.0.0.1 -p 54330 -U postgres -c "alter role supabase_auth_admin with password 'postgres'; alter role authenticator with password 'postgres';"
+PGPASSWORD=postgres psql -h 127.0.0.1 -p 54330 -U supabase_admin -d postgres -c "alter role supabase_auth_admin with password 'postgres'; alter role authenticator with password 'postgres';"
 (cd "$BIN" && GOTRUE_DB_DRIVER=postgres GOTRUE_DB_DATABASE_URL="postgres://supabase_auth_admin:postgres@127.0.0.1:54330/postgres?search_path=auth" \
-  GOTRUE_JWT_SECRET="$JWT_SECRET" GOTRUE_JWT_EXP=3600 GOTRUE_JWT_AUD=authenticated GOTRUE_JWT_ADMIN_ROLES=service_role \
+  GOTRUE_JWT_SECRET="$JWT_SECRET" GOTRUE_JWT_EXP=3600 GOTRUE_JWT_AUD=authenticated GOTRUE_JWT_ADMIN_ROLES=service_role GOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated \
   GOTRUE_SITE_URL=http://localhost:3000 API_EXTERNAL_URL=http://127.0.0.1:54321/auth/v1 GOTRUE_API_HOST=127.0.0.1 PORT=9999 \
   GOTRUE_DISABLE_SIGNUP=true GOTRUE_EXTERNAL_EMAIL_ENABLED=true GOTRUE_MAILER_AUTOCONFIRM=true GOTRUE_SMTP_HOST=127.0.0.1 GOTRUE_SMTP_PORT=2500 \
   GOTRUE_SMTP_ADMIN_EMAIL=admin@example.com ./auth > /var/tmp/nq-auth.log 2>&1 &)

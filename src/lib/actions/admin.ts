@@ -182,29 +182,97 @@ export async function updateReseller(form: FormData) {
 
 const TEMP_PASSWORD_COOKIE = "nq_mdp_provisoire";
 
-export async function createReseller(form: FormData) {
-  await requireAdmin();
-  const email = z.email().safeParse(str(form, "email"));
-  if (!email.success) back("/admin/revendeurs", { erreur: "Adresse email invalide." });
-  // Mot de passe provisoire aléatoire, affiché une seule fois à l'administratrice.
-  const password = randomBytes(12).toString("base64url");
-  const service = createServiceClient();
-  const { data, error } = await service.auth.admin.createUser({ email: email.data, password, email_confirm: true });
-  if (error || !data.user) back("/admin/revendeurs", { erreur: "Création impossible (adresse déjà utilisée ?)." });
-  const supabase = await createSessionClient();
-  await supabase
-    .from("profiles")
-    .update({ company_name: optional(form, "company_name"), contact_name: optional(form, "contact_name"), declared_country: optional(form, "declared_country") })
-    .eq("id", data.user.id);
-  // Le mot de passe provisoire n'apparaît jamais dans une URL : cookie httpOnly de courte durée.
-  (await cookies()).set(TEMP_PASSWORD_COOKIE, `${data.user.id}:${password}`, {
+/** Mot de passe lisible (sans caractères ambigus), facile à dicter ou à envoyer par message. */
+function readablePassword(): string {
+  const alphabet = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = randomBytes(10);
+  const chars = Array.from(bytes, (b) => alphabet[b % alphabet.length]);
+  return `${chars.slice(0, 5).join("")}-${chars.slice(5).join("")}`;
+}
+
+/** Garde le mot de passe à afficher dans un cookie httpOnly (jamais dans une URL), le temps de le transmettre. */
+async function rememberPassword(userId: string, password: string) {
+  (await cookies()).set(TEMP_PASSWORD_COOKIE, `${userId}:${password}`, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     path: "/admin/revendeurs",
-    maxAge: 120,
+    maxAge: 30 * 60,
   });
-  back(`/admin/revendeurs/${data.user.id}`, { ok: "Compte créé (en attente de validation)." });
+}
+
+const newResellerSchema = z.object({
+  email: z.email(),
+  country: z.enum(["DZ", "FR"]),
+  company_name: z.string().max(160).nullable(),
+  contact_name: z.string().max(160).nullable(),
+  phone: z.string().max(40).nullable(),
+  password: z.string().min(8).max(72).nullable(),
+});
+
+/**
+ * Création d'un compte revendeur en une seule étape : le compte est actif immédiatement,
+ * avec le pays (et donc les tarifs) choisi par l'administratrice.
+ */
+export async function createReseller(form: FormData) {
+  const admin = await requireAdmin();
+  const parsed = newResellerSchema.safeParse({
+    email: str(form, "email").toLowerCase(),
+    country: str(form, "country"),
+    company_name: optional(form, "company_name"),
+    contact_name: optional(form, "contact_name"),
+    phone: optional(form, "phone"),
+    password: optional(form, "password"),
+  });
+  if (!parsed.success) {
+    const field = parsed.error.issues[0]?.path[0];
+    back("/admin/revendeurs", {
+      erreur: field === "email" ? "Adresse email invalide." : field === "country" ? "Choisissez le pays du revendeur." : field === "password" ? "Le mot de passe doit faire au moins 8 caractères." : "Informations invalides.",
+    });
+  }
+  const v = parsed.data;
+  const password = v.password ?? readablePassword();
+  const service = createServiceClient();
+  const { data, error } = await service.auth.admin.createUser({ email: v.email, password, email_confirm: true });
+  if (error || !data.user) back("/admin/revendeurs", { erreur: "Création impossible : cette adresse email a peut-être déjà un compte." });
+  const supabase = await createSessionClient();
+  const { error: profileError } = await supabase
+    .from("profiles")
+    .update({
+      status: "active",
+      declared_country: v.country,
+      validated_country: v.country,
+      pricing_profile: v.country === "DZ" ? "reseller_dz" : "reseller_fr",
+      validated_at: new Date().toISOString(),
+      validated_by: admin.userId,
+      company_name: v.company_name,
+      contact_name: v.contact_name,
+      phone: v.phone,
+    })
+    .eq("id", data.user.id)
+    .eq("role", "reseller");
+  if (profileError) {
+    // Pas de compte à moitié créé : on supprime l'utilisateur si le profil n'a pas pu être activé.
+    await service.auth.admin.deleteUser(data.user.id);
+    back("/admin/revendeurs", { erreur: "Création impossible, réessayez." });
+  }
+  await rememberPassword(data.user.id, password);
+  revalidatePath("/admin/revendeurs");
+  back(`/admin/revendeurs/${data.user.id}`, { ok: "Compte créé et actif. Envoyez les identifiants ci-dessous au revendeur." });
+}
+
+/** Nouveau mot de passe pour un revendeur (oubli, ou identifiants perdus avant d'avoir été envoyés). */
+export async function resetResellerPassword(form: FormData) {
+  await requireAdmin();
+  const id = z.uuid().parse(str(form, "id"));
+  const supabase = await createSessionClient();
+  const { data: profile } = await supabase.from("profiles").select("id").eq("id", id).eq("role", "reseller").maybeSingle();
+  if (!profile) back("/admin/revendeurs", { erreur: "Compte introuvable." });
+  const password = readablePassword();
+  const { error } = await createServiceClient().auth.admin.updateUserById(id, { password });
+  if (error) back(`/admin/revendeurs/${id}`, { erreur: "Changement de mot de passe impossible." });
+  await rememberPassword(id, password);
+  back(`/admin/revendeurs/${id}`, { ok: "Nouveau mot de passe créé. Envoyez-le au revendeur." });
 }
 
 // ---------------------------------------------------------------------------
