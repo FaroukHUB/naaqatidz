@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createReseller } from "@/lib/actions/admin";
 import { createSessionClient } from "@/lib/supabase/server";
+import { listWilayas } from "@/lib/geo/algeria";
 import { Flash } from "../Flash";
+import { CountryAndAddress } from "./CountryAndAddress";
+
+const wilayas = listWilayas().map((w) => ({ code: w.code, name: w.nameFr }));
 
 export const metadata: Metadata = { title: "Revendeurs" };
 
@@ -39,19 +43,6 @@ export default async function ResellersPage({ searchParams }: { searchParams: Pr
             <input id="email" name="email" type="email" required autoComplete="off" className="field" />
             <p className="mt-1 text-xs text-encre/70">Il s&apos;en servira pour se connecter.</p>
           </div>
-          <fieldset className="sm:col-span-2">
-            <legend className="field-label">Pays du revendeur *</legend>
-            <div className="mt-1 grid gap-2 sm:grid-cols-2">
-              <label className="flex cursor-pointer gap-3 rounded-md border border-sable bg-white p-3 has-[:checked]:border-symbole has-[:checked]:bg-creme">
-                <input type="radio" name="country" value="DZ" required defaultChecked />
-                <span><strong>Algérie</strong><br /><span className="text-sm text-encre/70">Prix publics en DZD, sans limite de quantité.</span></span>
-              </label>
-              <label className="flex cursor-pointer gap-3 rounded-md border border-sable bg-white p-3 has-[:checked]:border-symbole has-[:checked]:bg-creme">
-                <input type="radio" name="country" value="FR" />
-                <span><strong>France</strong><br /><span className="text-sm text-encre/70">Tarifs France (menu « Tarifs France »).</span></span>
-              </label>
-            </div>
-          </fieldset>
           <div><label htmlFor="contact_name" className="field-label">Nom et prénom</label><input id="contact_name" name="contact_name" className="field" /></div>
           <div><label htmlFor="company_name" className="field-label">Boutique / société</label><input id="company_name" name="company_name" className="field" /></div>
           <div><label htmlFor="phone" className="field-label">Téléphone / WhatsApp</label><input id="phone" name="phone" type="tel" placeholder="+213 …" className="field" /></div>
@@ -59,6 +50,7 @@ export default async function ResellersPage({ searchParams }: { searchParams: Pr
             <label htmlFor="password" className="field-label">Mot de passe</label>
             <input id="password" name="password" type="text" minLength={8} autoComplete="off" placeholder="Laisser vide = créé automatiquement" className="field" />
           </div>
+          <CountryAndAddress wilayas={wilayas} country="DZ" address={{ wilayaCode: "", communeCode: "", city: "", postalCode: "", address: "", notes: "" }} />
           <div className="sm:col-span-2">
             <button className="btn-primary">Créer le compte</button>
           </div>

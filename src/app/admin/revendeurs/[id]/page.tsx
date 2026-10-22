@@ -7,6 +7,10 @@ import { publicEnv } from "@/lib/env";
 import { createSessionClient } from "@/lib/supabase/server";
 import { Flash } from "../../Flash";
 import { CredentialsCard } from "../CredentialsCard";
+import { CountryAndAddress } from "../CountryAndAddress";
+import { listWilayas } from "@/lib/geo/algeria";
+
+const wilayas = listWilayas().map((w) => ({ code: w.code, name: w.nameFr }));
 
 export const metadata: Metadata = { title: "Compte revendeur" };
 
@@ -58,16 +62,23 @@ export default async function ResellerPage({ params, searchParams }: Props) {
               {p.status === "pending" && <option value="pending">À activer</option>}
             </select>
           </div>
-          <div>
-            <label htmlFor="validated_country" className="field-label">Pays (détermine les prix)</label>
-            <select id="validated_country" name="validated_country" defaultValue={p.validated_country ?? "DZ"} className="field">
-              <option value="DZ">Algérie — prix publics DZD</option>
-              <option value="FR">France — tarifs France</option>
-            </select>
-          </div>
           <div><label htmlFor="contact_name" className="field-label">Nom et prénom</label><input id="contact_name" name="contact_name" defaultValue={p.contact_name ?? ""} className="field" /></div>
           <div><label htmlFor="company_name" className="field-label">Boutique / société</label><input id="company_name" name="company_name" defaultValue={p.company_name ?? ""} className="field" /></div>
           <div><label htmlFor="phone" className="field-label">Téléphone / WhatsApp</label><input id="phone" name="phone" type="tel" defaultValue={p.phone ?? ""} className="field" /></div>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <CountryAndAddress
+            wilayas={wilayas}
+            country={p.validated_country === "FR" ? "FR" : "DZ"}
+            address={{
+              wilayaCode: p.ship_wilaya_code ?? "",
+              communeCode: p.ship_commune_code ?? "",
+              city: p.ship_city ?? "",
+              postalCode: p.ship_postal_code ?? "",
+              address: p.ship_address ?? "",
+              notes: p.ship_notes ?? "",
+            }}
+          />
         </div>
         <div><label htmlFor="admin_notes" className="field-label">Notes internes (visibles par vous seule)</label><textarea id="admin_notes" name="admin_notes" defaultValue={p.admin_notes ?? ""} className="field" rows={3} /></div>
         <div><button className="btn-primary btn-small">Enregistrer</button></div>

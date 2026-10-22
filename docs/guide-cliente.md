@@ -65,13 +65,16 @@ Sans vidéo, l'ancien en-tête illustré reste affiché.
 
 Tout se fait dans **Administration → Revendeurs** (`/admin/revendeurs`), sans passer par Supabase :
 
-1. Remplissez **« Ajouter un revendeur »** : email, pays (Algérie ou France), nom, boutique, téléphone.
+1. Remplissez **« Ajouter un revendeur »** : email, pays (Algérie ou France), nom, boutique, téléphone et,
+   si vous la connaissez, son adresse de livraison (elle sera pré-remplie dans son panier).
    Laissez le mot de passe vide pour qu'il soit créé automatiquement.
 2. Cliquez sur **« Créer le compte »** : le compte est **actif immédiatement**.
 3. Un message prêt à envoyer s'affiche (adresse du site, email, mot de passe) : **« Copier le message »** ou
    **« Envoyer par WhatsApp »**. Il reste affiché 30 minutes.
 4. Mot de passe oublié ou perdu : ouvrez le revendeur (« Gérer ») → **« Créer un nouveau mot de passe »**.
 5. Pour bloquer un revendeur : « Gérer » → Accès au site : **Suspendu**.
+
+Après chaque commande, l'adresse utilisée est mémorisée : le revendeur n'a plus à la retaper.
 
 Le pays choisi détermine les prix : Algérie = prix publics DZD ; France = tarifs du menu « Tarifs France ».
 

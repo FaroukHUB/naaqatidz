@@ -8,7 +8,7 @@ import { z } from "zod";
 import { content } from "@/lib/catalog";
 import { isValidCurrencyCode, toMinor } from "@/lib/domain/money";
 import { validateManualPlan, type PackingItem } from "@/lib/domain/packing";
-import { getCommune } from "@/lib/geo/algeria";
+import { getCommune, resolveAddress } from "@/lib/geo/algeria";
 import { ORDER_STATUSES, PAYMENT_STATUSES } from "@/lib/order-labels";
 import { mapSettings, type SettingsRow } from "@/lib/server/commerce-store";
 import { requireAdmin } from "@/lib/server/viewer";
@@ -145,6 +145,25 @@ export async function adjustPacking(form: FormData) {
 // ---------------------------------------------------------------------------
 // Revendeurs
 // ---------------------------------------------------------------------------
+/** Adresse de livraison habituelle saisie par l'administration (facultative). */
+function shippingFromForm(form: FormData, country: "DZ" | "FR"): { ok: true; value: Record<string, string | null> } | { ok: false; error: string } {
+  const address = optional(form, "ship_address");
+  const notes = optional(form, "ship_notes");
+  if ((address?.length ?? 0) > 500 || (notes?.length ?? 0) > 500) return { ok: false, error: "Adresse trop longue." };
+  if (country === "DZ") {
+    const wilaya = optional(form, "ship_wilaya_code");
+    const commune = optional(form, "ship_commune_code");
+    if ((wilaya || commune) && !(wilaya && commune && resolveAddress(wilaya, commune))) {
+      return { ok: false, error: "Choisissez la wilaya puis la commune de livraison." };
+    }
+    return { ok: true, value: { ship_country: "DZ", ship_wilaya_code: wilaya, ship_commune_code: commune, ship_city: null, ship_postal_code: null, ship_address: address, ship_notes: notes } };
+  }
+  const city = optional(form, "ship_city");
+  const postal = optional(form, "ship_postal_code");
+  if ((city?.length ?? 0) > 120 || (postal?.length ?? 0) > 20) return { ok: false, error: "Ville ou code postal trop long." };
+  return { ok: true, value: { ship_country: "FR", ship_wilaya_code: null, ship_commune_code: null, ship_city: city, ship_postal_code: postal, ship_address: address, ship_notes: notes } };
+}
+
 const resellerSchema = z.object({
   status: z.enum(["pending", "active", "suspended"]),
   validated_country: z.enum(["DZ", "FR"]).nullable(),
@@ -159,7 +178,7 @@ export async function updateReseller(form: FormData) {
   const id = z.uuid().parse(str(form, "id"));
   const parsed = resellerSchema.safeParse({
     status: str(form, "status"),
-    validated_country: optional(form, "validated_country"),
+    validated_country: optional(form, "country"),
     company_name: optional(form, "company_name"),
     contact_name: optional(form, "contact_name"),
     phone: optional(form, "phone"),
@@ -168,12 +187,14 @@ export async function updateReseller(form: FormData) {
   if (!parsed.success) back(`/admin/revendeurs/${id}`, { erreur: "Données invalides." });
   const v = parsed.data;
   if (v.status === "active" && !v.validated_country) back(`/admin/revendeurs/${id}`, { erreur: "Un compte actif doit avoir un pays de résidence validé." });
+  const shipping = v.validated_country ? shippingFromForm(form, v.validated_country) : ({ ok: true, value: {} } as const);
+  if (!shipping.ok) back(`/admin/revendeurs/${id}`, { erreur: shipping.error });
   // Le profil tarifaire découle du pays de résidence validé : il n'est jamais choisi par le revendeur.
   const pricing_profile = v.validated_country === "DZ" ? "reseller_dz" : v.validated_country === "FR" ? "reseller_fr" : null;
   const supabase = await createSessionClient();
   const { error } = await supabase
     .from("profiles")
-    .update({ ...v, pricing_profile, validated_at: v.validated_country ? new Date().toISOString() : null, validated_by: v.validated_country ? admin.userId : null })
+    .update({ ...v, ...shipping.value, pricing_profile, validated_at: v.validated_country ? new Date().toISOString() : null, validated_by: v.validated_country ? admin.userId : null })
     .eq("id", id)
     .eq("role", "reseller");
   revalidatePath("/admin/revendeurs");
@@ -231,6 +252,8 @@ export async function createReseller(form: FormData) {
     });
   }
   const v = parsed.data;
+  const shipping = shippingFromForm(form, v.country);
+  if (!shipping.ok) back("/admin/revendeurs", { erreur: shipping.error });
   const password = v.password ?? readablePassword();
   const service = createServiceClient();
   const { data, error } = await service.auth.admin.createUser({ email: v.email, password, email_confirm: true });
@@ -248,6 +271,7 @@ export async function createReseller(form: FormData) {
       company_name: v.company_name,
       contact_name: v.contact_name,
       phone: v.phone,
+      ...shipping.value,
     })
     .eq("id", data.user.id)
     .eq("role", "reseller");

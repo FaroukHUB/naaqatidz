@@ -10,6 +10,16 @@ export interface ViewerProfile extends Viewer {
   contactName: string | null;
   companyName: string | null;
   phone: string | null;
+  /** Adresse de livraison habituelle (pré-remplissage du panier revendeur). */
+  shipping: {
+    country: string | null;
+    wilayaCode: string | null;
+    communeCode: string | null;
+    city: string | null;
+    postalCode: string | null;
+    address: string | null;
+    notes: string | null;
+  };
 }
 
 /** Utilisateur connecté et son profil, lus via la session (cookies) et la RLS. */
@@ -21,7 +31,7 @@ export async function getViewer(): Promise<ViewerProfile | null> {
   if (!sub) return null;
   const { data: p } = await supabase
     .from("profiles")
-    .select("id, email, role, status, pricing_profile, validated_country, contact_name, company_name, phone")
+    .select("id, email, role, status, pricing_profile, validated_country, contact_name, company_name, phone, ship_country, ship_wilaya_code, ship_commune_code, ship_city, ship_postal_code, ship_address, ship_notes")
     .eq("id", sub)
     .maybeSingle();
   if (!p) return null;
@@ -35,6 +45,15 @@ export async function getViewer(): Promise<ViewerProfile | null> {
     contactName: p.contact_name,
     companyName: p.company_name,
     phone: p.phone,
+    shipping: {
+      country: p.ship_country,
+      wilayaCode: p.ship_wilaya_code,
+      communeCode: p.ship_commune_code,
+      city: p.ship_city,
+      postalCode: p.ship_postal_code,
+      address: p.ship_address,
+      notes: p.ship_notes,
+    },
   };
 }
 

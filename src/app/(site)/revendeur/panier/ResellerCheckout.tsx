@@ -15,16 +15,37 @@ interface Props {
   scope: string;
   profile: "reseller_dz" | "reseller_fr";
   wilayas: WilayaOption[];
-  defaults: { contactName: string; companyName: string; phone: string };
+  defaults: {
+    contactName: string;
+    companyName: string;
+    phone: string;
+    wilayaCode: string;
+    communeCode: string;
+    address: string;
+    notes: string;
+    country: string;
+    city: string;
+    postalCode: string;
+  };
   france: { paymentTerms: string | null; shippingTerms: string | null; missing: string[] } | null;
 }
 
 export function ResellerCheckout({ scope, profile, wilayas, defaults, france }: Props) {
   const router = useRouter();
   const cart = useCart(scope);
-  const [dest, setDest] = useState({ wilayaCode: "", communeCode: "" });
+  const [dest, setDest] = useState({ wilayaCode: defaults.wilayaCode, communeCode: defaults.communeCode });
   const [methodId, setMethodId] = useState<string | null>(null);
-  const [f, setF] = useState({ ...defaults, address: "", notes: "", country: "FR", city: "", postalCode: "" });
+  const [f, setF] = useState({
+    contactName: defaults.contactName,
+    companyName: defaults.companyName,
+    phone: defaults.phone,
+    address: defaults.address,
+    notes: defaults.notes,
+    country: defaults.country,
+    city: defaults.city,
+    postalCode: defaults.postalCode,
+  });
+  const prefilled = Boolean(defaults.address);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -117,6 +138,7 @@ export function ResellerCheckout({ scope, profile, wilayas, defaults, france }: 
 
         <fieldset className="card space-y-4 p-4">
           <legend className="px-1 font-serif text-xl text-marron">Contact et livraison</legend>
+          {prefilled && <p className="text-sm text-encre/70">Vos informations habituelles sont pré-remplies : vérifiez-les, modifiez-les si besoin.</p>}
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="field-label" htmlFor="contact">Nom du contact *</label>
