@@ -25,7 +25,7 @@ export const homePage = defineType({
       title: "Vidéo d'en-tête — téléphone",
       type: "file",
       options: { accept: "video/mp4,video/webm" },
-      description: "Format portrait (9:16), MP4, sans son, idéalement moins de 5 Mo. Le texte s'affiche en bas. Si vide, la vidéo ordinateur est recadrée.",
+      description: "Format portrait (9:16), MP4, sans son, idéalement moins de 5 Mo. Le texte s'affiche en bas. Si vide, la vidéo ordinateur est affichée en entier avec le texte dessous. Ne mettez ici qu'une vidéo verticale.",
     }),
     defineField({
       name: "heroPoster",

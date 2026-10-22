@@ -33,13 +33,10 @@ export function HeroVideo({ desktop, mobile, poster }: { desktop: VideoView | nu
     video.play().catch(() => {});
   }, [source]);
 
-  // Sans version téléphone, la vidéo paysage est recadrée sur la droite, où se trouvent les produits.
-  const position = source && source === desktop && !mobile ? "object-[65%_center] md:object-center" : "object-center";
-
   return (
     <video
       ref={ref}
-      className={`absolute inset-0 h-full w-full object-cover ${position}`}
+      className="absolute inset-0 h-full w-full object-cover"
       poster={poster ?? undefined}
       muted
       loop

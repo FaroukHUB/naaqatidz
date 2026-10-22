@@ -24,7 +24,7 @@ Studio → **Page d'accueil** :
 1. **Vidéo d'en-tête — ordinateur** : vidéo paysage (16:9), MP4, sans son, idéalement moins de 8 Mo.
    Le texte et les boutons s'affichent à gauche : gardez le côté gauche de l'image dégagé.
 2. **Vidéo d'en-tête — téléphone** : vidéo portrait (9:16), MP4, idéalement moins de 5 Mo ; le texte s'affiche en bas.
-   Si elle est vide, la vidéo ordinateur est recadrée sur sa partie droite.
+   Si elle est vide, la vidéo ordinateur est affichée en entier (16:9) avec le texte dessous. Ne mettez ici qu'une vidéo verticale.
 3. **Image d'attente** : une image tirée de la vidéo, affichée pendant le chargement (et pour les visiteurs qui
    ont désactivé les animations).
 4. **Titre principal**, **Texte d'introduction**, **Bouton principal** (texte + lien, ex. `/boutique`) et

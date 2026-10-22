@@ -59,6 +59,7 @@ export default async function HomePage() {
   const heroText = home?.heroText ?? DEFAULTS.heroText;
   const heroVideo = home && (home.heroVideo.desktop || home.heroVideo.mobile);
   const heroButtons = home?.heroButtons ?? [];
+  const portraitOnMobile = Boolean(home?.heroVideo.mobile);
 
   return (
     <>
@@ -77,11 +78,15 @@ export default async function HomePage() {
 
       {/* Héros vidéo (si une vidéo est publiée dans le Studio), sinon héros illustré */}
       {heroVideo ? (
-        <section className="relative isolate flex min-h-[88svh] overflow-hidden bg-ilaji text-white md:min-h-[min(85vh,56.25vw)]">
-          <HeroVideo desktop={home!.heroVideo.desktop} mobile={home!.heroVideo.mobile} poster={home!.heroPoster ? `${home!.heroPoster.url}?w=1920&auto=format` : null} />
-          {/* Voile pour la lisibilité : par le bas sur téléphone, par la gauche sur ordinateur */}
-          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ilaji/90 via-ilaji/35 to-transparent md:bg-gradient-to-r md:from-ilaji/80 md:from-10% md:via-ilaji/30 md:via-45% md:to-transparent md:to-70%" />
-          <div className="container-page relative z-10 flex w-full items-end pb-24 pt-24 md:items-center md:pb-28">
+        // Avec une vidéo portrait pour téléphone : plein écran, texte en bas. Sinon, sur téléphone, la vidéo
+        // paysage est montrée entière (16:9) et le texte passe dessous, pour ne pas la recadrer à l'excès.
+        <section className={`relative isolate overflow-hidden bg-ilaji text-white md:flex md:aspect-video ${portraitOnMobile ? "flex min-h-[88svh]" : ""}`}>
+          <div className={portraitOnMobile ? "absolute inset-0" : "relative aspect-video w-full md:absolute md:inset-0 md:aspect-auto"}>
+            <HeroVideo desktop={home!.heroVideo.desktop} mobile={home!.heroVideo.mobile} poster={home!.heroPoster ? `${home!.heroPoster.url}?w=1920&auto=format` : null} />
+            {/* Voile pour la lisibilité : par le bas sur téléphone, par la gauche sur ordinateur */}
+            <div aria-hidden="true" className={`absolute inset-0 md:block md:bg-gradient-to-r md:from-ilaji/80 md:from-10% md:via-ilaji/30 md:via-45% md:to-transparent md:to-70% ${portraitOnMobile ? "bg-gradient-to-t from-ilaji/90 via-ilaji/35 to-transparent" : "hidden"}`} />
+          </div>
+          <div className={`container-page relative z-10 flex w-full md:items-center md:py-16 ${portraitOnMobile ? "items-end pb-24 pt-24" : "pb-20 pt-8"}`}>
             <div className="max-w-xl text-left">
               <Image src="/brand/naaqati-calligraphie-or.webp" alt="" width={803} height={220} priority unoptimized className="h-auto w-40 sm:w-52" />
               <h1 className="title-display mt-5 text-3xl leading-tight text-white sm:text-5xl">{heroTitle}</h1>
