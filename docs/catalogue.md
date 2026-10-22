@@ -12,13 +12,14 @@ ne plus les modifier une fois un produit commandé.
 | | Coffret découverte de nos 4 savons, 190 g | SAV-COFFRET-4 (1 400) |
 | Soin des cheveux › Shampoings | Shampoing Al Asli | SHA-ASLI-90 (500), SHA-ASLI-350 (1 800) |
 | | Shampoing Al 'Ilaji | SHA-ILAJI-90 (500), SHA-ILAJI-350 (1 800) |
+| | Shampoing Al ʿĀtir (parfumé) — « tarifs identiques pour tous les shampoings » | SHA-ATIR-90 (500), SHA-ATIR-350 (1 800) |
 | Soin des cheveux › Masques capillaires 3 en 1 | Al Asli — l'Essentiel | MAS-ASLI-50 (450), MAS-ASLI-100 (900), MAS-ASLI-300 (2 500) |
 | | Al ʿĀtir — la Parfumée (5 senteurs) | MAS-ATIR-{50,100,300}-{SENTEUR} (450 / 900 / 2 500) |
 | Soin des cheveux › Hennés et poudres de plantes | Henné de Médine, 100 g | HEN-MEDINE-100 (500) |
 | | Henné de Biskra, 500 g | HEN-BISKRA-500 (400) |
 | | Sidr en poudre, 250 g | SIDR-250 (600) |
 | Hygiène et bien-être › Chantillys | Al Asli, Al ʿIlāji, Ar Rāha | CHA-{ASLI,ILAJI,RAHA}-25 (400), -70 (950) |
-| | Al ʿĀtir — la Parfumée (15 senteurs) | CHA-ATIR-{25,70}-{SENTEUR} (400 / 950) |
+| | Al ʿĀtir — la Parfumée (15 senteurs), aussi dans « Univers homme » | CHA-ATIR-{25,70}-{SENTEUR} (400 / 950) |
 | Hygiène et bien-être › Baumes | Al Asli — l'Essentiel | BAU-ASLI-50 (600), BAU-ASLI-100 (1 100) |
 | | Al 'Ilaji — le Réparateur | BAU-ILAJI-50 (700), BAU-ILAJI-100 (1 200) |
 | Hygiène et bien-être › Déodorants | Déodorant Al Asli, 50 g | DEO-ASLI-50 (950) |
@@ -60,14 +61,21 @@ la fiche produit propose la contenance puis la senteur. Code SKU de la senteur e
 
 Compositions principales : saisies dans le champ « Ingrédients / composition » de chaque produit.
 
+## Poids d'expédition
+
+Renseignés le 22/10/2026 à partir des poids et contenances nets de la carte des prix (1 ml compté 1 g).
+Ils n'incluent pas l'emballage individuel : à corriger dans le Studio si besoin, ou à couvrir par la marge
+de protection des cartons (Administration → Paramètres). Sans poids (pas d'indication sur la carte) :
+les 3 khôls et le musc d'Arabie — une commande revendeur Algérie qui les contient reste bloquée tant
+que leur poids n'est pas saisi.
+
 ## À compléter
 
 - Photos de chaque produit (Studio → produit → Photos, avec un texte alternatif).
-- **Poids d'expédition** de chaque SKU (produit + emballage, en grammes) : sans eux, les commandes revendeurs
-  Algérie sont bloquées et les tarifs de livraison « par tranches de poids » ne s'appliquent pas.
+- Poids d'expédition des 3 khôls et du musc d'Arabie.
 - Ras el hanout sans muscade : prix et contenance (fiche en brouillon, non publiée).
-- Déodorant Al ʿĀtir (7 senteurs) et Shampoing Al ʿĀtir (1 senteur imposée) : prix, contenance, et senteur
-  du shampoing (fiches en brouillon, non publiées).
+- Déodorant Al ʿĀtir (7 senteurs) : prix et contenance (fiche en brouillon, non publiée ; absent de la carte des prix).
+- Shampoing Al ʿĀtir : nom de la senteur imposée (à ajouter dans la description).
 - Le tableau de gamme annonce « 16 senteurs » pour le chantilly mais n'en liste que 15 : à confirmer.
 - Musc d'Arabie : contenance ; préciser ce que signifie « temporaire ».
 - Sous-catégorie « Soins cheveux et barbe » : en brouillon tant qu'aucun produit ne s'y rattache.
