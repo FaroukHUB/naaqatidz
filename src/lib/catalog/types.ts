@@ -104,7 +104,14 @@ export interface RichPageView {
   updatedAt: string | null;
 }
 
+export interface ContactLineView {
+  label: string;
+  phone: string;
+  whatsapp: boolean;
+}
+
 export interface SiteSettingsView {
+  contacts: ContactLineView[];
   phone: string | null;
   email: string | null;
   whatsapp: string | null;
@@ -113,6 +120,7 @@ export interface SiteSettingsView {
   instagram: string | null;
   facebook: string | null;
   tiktok: string | null;
+  telegram: string | null;
   contactIntro: string | null;
   resellerIntro: string | null;
   defaultSeo: SeoView;

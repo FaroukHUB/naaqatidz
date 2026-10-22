@@ -6,7 +6,7 @@ import { publicEnv } from "@/lib/env";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SiteImage } from "@/components/ui/SiteImage";
-import { HeroVideo } from "@/components/site/HeroVideo";
+import { HeroVideoSection } from "@/components/site/HeroVideo";
 import { Dunes, SectionTitle, Sparkle } from "@/components/brand/Decor";
 
 export const revalidate = 60;
@@ -59,7 +59,6 @@ export default async function HomePage() {
   const heroText = home?.heroText ?? DEFAULTS.heroText;
   const heroVideo = home && (home.heroVideo.desktop || home.heroVideo.mobile);
   const heroButtons = home?.heroButtons ?? [];
-  const portraitOnMobile = Boolean(home?.heroVideo.mobile);
 
   return (
     <>
@@ -71,42 +70,35 @@ export default async function HomePage() {
           url: publicEnv.siteUrl,
           logo: `${publicEnv.siteUrl}/brand/naaqati-logo-complet.png`,
           ...(settings?.email ? { email: settings.email } : {}),
+          ...(settings?.contacts.length ? { contactPoint: settings.contacts.map((c) => ({ "@type": "ContactPoint", name: c.label, telephone: c.phone, contactType: "customer service" })) } : {}),
           ...(settings?.phone ? { telephone: settings.phone } : {}),
-          sameAs: [settings?.instagram, settings?.facebook, settings?.tiktok].filter(Boolean),
+          sameAs: [settings?.instagram, settings?.facebook, settings?.tiktok, settings?.telegram].filter(Boolean),
         }}
       />
 
       {/* Héros vidéo (si une vidéo est publiée dans le Studio), sinon héros illustré */}
       {heroVideo ? (
-        // Avec une vidéo portrait pour téléphone : plein écran, texte en bas. Sinon, sur téléphone, la vidéo
-        // paysage est montrée entière (16:9) et le texte passe dessous, pour ne pas la recadrer à l'excès.
-        <section className={`relative isolate overflow-hidden bg-ilaji text-white md:flex md:aspect-video ${portraitOnMobile ? "flex min-h-[88svh]" : ""}`}>
-          <div className={portraitOnMobile ? "absolute inset-0" : "relative aspect-video w-full md:absolute md:inset-0 md:aspect-auto"}>
-            <HeroVideo desktop={home!.heroVideo.desktop} mobile={home!.heroVideo.mobile} poster={home!.heroPoster ? `${home!.heroPoster.url}?w=1920&auto=format` : null} desktopImage={Boolean(home!.heroDesktopImage)} />
-            {home!.heroDesktopImage && (
-              <SiteImage image={home!.heroDesktopImage} sizes="100vw" className="absolute inset-0 hidden h-full w-full object-cover md:block" />
+        <HeroVideoSection
+          desktop={home!.heroVideo.desktop}
+          mobile={home!.heroVideo.mobile}
+          poster={home!.heroPoster ? `${home!.heroPoster.url}?w=1920&auto=format` : null}
+          desktopImage={home!.heroDesktopImage}
+        >
+          <div className="max-w-xl text-left">
+            <Image src="/brand/naaqati-calligraphie-or.webp" alt="" width={803} height={220} priority unoptimized className="h-auto w-40 sm:w-52" />
+            <h1 className="title-display mt-5 text-3xl leading-tight text-white sm:text-5xl">{heroTitle}</h1>
+            <p className="mt-4 max-w-md text-lg leading-relaxed text-encre-claire">{heroText}</p>
+            {heroButtons.length > 0 && (
+              <div className="mt-8 flex flex-wrap gap-3">
+                {heroButtons.map((b, i) => (
+                  <Link key={b.href + i} href={b.href} className={i === 0 ? "btn-primary px-7" : "btn border border-white/70 px-7 text-white hover:bg-white/10"}>
+                    {b.label}
+                  </Link>
+                ))}
+              </div>
             )}
-            {/* Voile pour la lisibilité : par le bas sur téléphone, par la gauche sur ordinateur */}
-            <div aria-hidden="true" className={`absolute inset-0 md:block md:bg-gradient-to-r md:from-ilaji/80 md:from-10% md:via-ilaji/30 md:via-45% md:to-transparent md:to-70% ${portraitOnMobile ? "bg-gradient-to-t from-ilaji/90 via-ilaji/35 to-transparent" : "hidden"}`} />
           </div>
-          <div className={`container-page relative z-10 flex w-full md:items-center md:py-16 ${portraitOnMobile ? "items-end pb-24 pt-24" : "pb-20 pt-8"}`}>
-            <div className="max-w-xl text-left">
-              <Image src="/brand/naaqati-calligraphie-or.webp" alt="" width={803} height={220} priority unoptimized className="h-auto w-40 sm:w-52" />
-              <h1 className="title-display mt-5 text-3xl leading-tight text-white sm:text-5xl">{heroTitle}</h1>
-              <p className="mt-4 max-w-md text-lg leading-relaxed text-encre-claire">{heroText}</p>
-              {heroButtons.length > 0 && (
-                <div className="mt-8 flex flex-wrap gap-3">
-                  {heroButtons.map((b, i) => (
-                    <Link key={b.href + i} href={b.href} className={i === 0 ? "btn-primary px-7" : "btn border border-white/70 px-7 text-white hover:bg-white/10"}>
-                      {b.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          <Dunes className="absolute inset-x-0 bottom-0 z-10 h-14 w-full md:h-20" />
-        </section>
+        </HeroVideoSection>
       ) : (
       <section className="relative overflow-hidden bg-creme">
         <Sparkle className="absolute left-[8%] top-10 text-kraft/60" size={14} />

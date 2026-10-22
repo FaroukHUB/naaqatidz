@@ -71,7 +71,8 @@ export const legalPageQuery = defineQuery(`*[_type == "legalPage" && slug == $sl
 }`);
 
 export const settingsQuery = defineQuery(`*[_type == "siteSettings" && _id == "siteSettings"][0]{
-  phone, email, whatsapp, address, openingHours, instagram, facebook, tiktok, contactIntro, resellerIntro,
+  phone, email, whatsapp, address, openingHours, instagram, facebook, tiktok, telegram, contactIntro, resellerIntro,
+  "contacts": coalesce(contacts[defined(phone) && defined(label)]{ label, phone, "whatsapp": whatsapp == true }, []),
   "defaultSeo": { "title": defaultSeo.title, "description": defaultSeo.description }
 }`);
 

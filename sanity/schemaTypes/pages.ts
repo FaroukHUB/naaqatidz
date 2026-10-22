@@ -28,10 +28,10 @@ export const homePage = defineType({
     }),
     defineField({
       name: "heroVideoMobile",
-      title: "Vidéo verticale pour téléphone (facultatif, 9:16)",
+      title: "Vidéo pour téléphone (facultatif)",
       type: "file",
       options: { accept: "video/mp4,video/webm" },
-      description: "Format portrait (9:16), MP4, sans son, idéalement moins de 5 Mo. Le texte s'affiche en bas. Si vide, la vidéo ordinateur est affichée en entier avec le texte dessous. Ne mettez ici qu'une vidéo verticale.",
+      description: "MP4, sans son, idéalement moins de 5 Mo. Verticale (9:16) : plein écran, texte en bas. Horizontale : affichée en entier, texte dessous. Si vide, la vidéo paysage ci-dessus est utilisée.",
     }),
     defineField({
       name: "heroPoster",
@@ -100,7 +100,26 @@ export const siteSettings = defineType({
   title: "Coordonnées et réglages du site",
   type: "document",
   fields: [
-    defineField({ name: "phone", title: "Téléphone", type: "string" }),
+    defineField({
+      name: "contacts",
+      title: "Numéros de contact",
+      type: "array",
+      description: "Affichés sur la page Contact et en bas de chaque page (ex. « Contact hommes », « Contact femmes »).",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "contactLine",
+          title: "Numéro",
+          fields: [
+            defineField({ name: "label", title: "Intitulé", type: "string", validation: (r) => r.required() }),
+            defineField({ name: "phone", title: "Numéro (format international, ex. +213 779 82 72 20)", type: "string", validation: (r) => r.required().regex(/^\+?[0-9 ]{8,20}$/, { name: "numéro" }) }),
+            defineField({ name: "whatsapp", title: "Joignable sur WhatsApp", type: "boolean", initialValue: false }),
+          ],
+          preview: { select: { title: "label", subtitle: "phone" } },
+        }),
+      ],
+    }),
+    defineField({ name: "phone", title: "Téléphone (ancien champ, utilisez plutôt « Numéros de contact »)", type: "string", hidden: ({ value }) => !value }),
     defineField({ name: "whatsapp", title: "WhatsApp (numéro au format international, ex. 213…)", type: "string" }),
     defineField({ name: "email", title: "Email de contact", type: "string", validation: (r) => r.email() }),
     defineField({ name: "address", title: "Adresse", type: "text", rows: 2 }),
@@ -108,6 +127,7 @@ export const siteSettings = defineType({
     defineField({ name: "instagram", title: "Lien Instagram", type: "url" }),
     defineField({ name: "facebook", title: "Lien Facebook", type: "url" }),
     defineField({ name: "tiktok", title: "Lien TikTok", type: "url" }),
+    defineField({ name: "telegram", title: "Lien Telegram", type: "url" }),
     defineField({ name: "contactIntro", title: "Texte de la page Contact", type: "text", rows: 3 }),
     defineField({ name: "resellerIntro", title: "Texte de présentation de l'espace revendeur", type: "text", rows: 3 }),
     defineField({ name: "defaultSeo", title: "Référencement par défaut", type: "seo" }),

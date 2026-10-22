@@ -8,6 +8,7 @@ export function Footer({ settings }: { settings: SiteSettingsView | null }) {
     { href: settings?.instagram, label: "Instagram" },
     { href: settings?.facebook, label: "Facebook" },
     { href: settings?.tiktok, label: "TikTok" },
+    { href: settings?.telegram, label: "Telegram" },
   ].filter((s): s is { href: string; label: string } => Boolean(s.href));
   return (
     <footer className="mt-20 text-encre-claire">
@@ -40,9 +41,15 @@ export function Footer({ settings }: { settings: SiteSettingsView | null }) {
         </nav>
         <div className="text-sm">
           <p className="mb-3 font-display text-sm uppercase tracking-[0.15em] text-or">Contact</p>
+          {settings?.contacts.map((c) => (
+            <p key={c.label + c.phone} className="mb-1">
+              <span className="block text-xs uppercase tracking-[0.15em] text-encre-claire/60">{c.label}</span>
+              <a href={`tel:${c.phone.replace(/[^\d+]/g, "")}`} className="hover:text-or">{c.phone}</a>
+            </p>
+          ))}
           {settings?.phone && <p><a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="hover:text-or">{settings.phone}</a></p>}
           {settings?.email && <p className="mt-1"><a href={`mailto:${settings.email}`} className="hover:text-or">{settings.email}</a></p>}
-          {!settings?.phone && !settings?.email && <p><Link href="/contact" className="hover:text-or">Nous écrire</Link></p>}
+          <p className="mt-2"><Link href="/contact" className="hover:text-or">Page contact</Link></p>
           {socials.length > 0 && (
             <ul className="mt-4 flex gap-4">
               {socials.map((s) => (
