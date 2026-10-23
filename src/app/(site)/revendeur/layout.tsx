@@ -36,7 +36,7 @@ export default async function ResellerLayout({ children }: { children: React.Rea
             <p className="mt-1">
               {viewer.status === "suspended"
                 ? "Ce compte est suspendu. Contactez Naaqati pour plus d'informations."
-                : "Ce compte n'a pas encore été activé par Naaqati : les tarifs et la commande ne sont pas disponibles."}
+                : "Votre compte revendeur France est enregistré. Naaqati va le vérifier et l'activer : vous verrez alors vos tarifs et pourrez commander. Pour accélérer, contactez-nous."}
             </p>
             <form action={signOut} className="mt-3"><button className="btn-secondary btn-small">Se connecter avec un autre compte</button></form>
           </Notice>

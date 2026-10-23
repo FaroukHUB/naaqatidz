@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createReseller } from "@/lib/actions/admin";
+import { activateReseller, createReseller } from "@/lib/actions/admin";
 import { createSessionClient } from "@/lib/supabase/server";
 import { listWilayas } from "@/lib/geo/algeria";
 import { Flash } from "../Flash";
@@ -23,7 +23,7 @@ export default async function ResellersPage({ searchParams }: { searchParams: Pr
   const supabase = await createSessionClient();
   const { data: rows } = await supabase
     .from("profiles")
-    .select("id, email, status, company_name, contact_name, phone, validated_country, created_at")
+    .select("id, email, status, company_name, contact_name, phone, validated_country, declared_country, created_at")
     .eq("role", "reseller")
     .order("created_at", { ascending: false });
 
@@ -69,9 +69,19 @@ export default async function ResellersPage({ searchParams }: { searchParams: Pr
                   <tr key={r.id}>
                     <td>{r.contact_name ?? r.company_name ?? "—"}{r.contact_name && r.company_name && <span className="block text-xs text-encre/70">{r.company_name}</span>}</td>
                     <td>{r.email}</td>
-                    <td>{r.validated_country ? COUNTRY[r.validated_country as keyof typeof COUNTRY] : "—"}</td>
+                    <td>{(() => { const c = r.validated_country ?? r.declared_country; return c ? COUNTRY[c as keyof typeof COUNTRY] ?? c : "—"; })()}</td>
                     <td><span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${status.className}`}>{status.label}</span></td>
-                    <td><Link href={`/admin/revendeurs/${r.id}`} className="font-semibold text-titre underline">Gérer</Link></td>
+                    <td>
+                      <div className="flex flex-wrap items-center gap-3">
+                        {r.status === "pending" && (
+                          <form action={activateReseller}>
+                            <input type="hidden" name="id" value={r.id} />
+                            <button className="btn-primary btn-small">Activer</button>
+                          </form>
+                        )}
+                        <Link href={`/admin/revendeurs/${r.id}`} className="font-semibold text-titre underline">Gérer</Link>
+                      </div>
+                    </td>
                   </tr>
                 );
               })}

@@ -29,6 +29,7 @@ export function Footer({ settings }: { settings: SiteSettingsView | null }) {
             <li><Link href="/panier" className="hover:text-or">Panier</Link></li>
             <li><Link href="/a-propos" className="hover:text-or">Notre histoire</Link></li>
             <li><Link href="/revendeur" className="hover:text-or">Espace revendeur</Link></li>
+            <li><Link href="/devenir-revendeur" className="hover:text-or">Devenir revendeur</Link></li>
           </ul>
         </nav>
         <nav aria-label="Informations">

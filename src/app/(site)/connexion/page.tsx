@@ -54,7 +54,12 @@ export default async function LoginPage({ searchParams }: Props) {
         {erreur === "lien" && <Notice tone="error">Ce lien n&apos;est plus valide. Demandez un nouvel email.</Notice>}
         <LoginForm suite={suite} />
         <p className="text-sm"><Link href="/connexion/mot-de-passe-oublie" className="text-titre underline">Mot de passe oublié ?</Link></p>
-        {!forAdmin && <p className="text-sm text-encre/70">Vous souhaitez devenir revendeur ? <Link href="/contact" className="underline">Contactez Naaqati</Link> : votre compte sera créé et validé par l&apos;équipe.</p>}
+        {!forAdmin && (
+          <div className="rounded-lg border border-sable bg-white p-4">
+            <p className="font-semibold">Pas encore de compte revendeur ?</p>
+            <Link href="/devenir-revendeur" className="btn-secondary btn-small mt-2">Créer mon compte revendeur</Link>
+          </div>
+        )}
       </div>
     </div>
   );

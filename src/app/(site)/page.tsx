@@ -247,7 +247,7 @@ export default async function HomePage() {
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link href="/revendeur" className="btn-primary">Accéder à l&apos;espace revendeur</Link>
-              <Link href="/contact" className="btn-secondary bg-white/60">Devenir revendeur</Link>
+              <Link href="/devenir-revendeur" className="btn-secondary bg-white/60">Devenir revendeur</Link>
             </div>
           </div>
         </div>

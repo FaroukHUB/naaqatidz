@@ -38,7 +38,7 @@ export default async function ContactPage() {
       ) : (
         <p className="tagline text-center text-xl">Les coordonnées de contact seront bientôt disponibles.</p>
       )}
-      <p className="mt-10 text-center text-sm text-encre/70">Revendeur ? Rendez-vous dans l&apos;<Link className="underline" href="/revendeur">espace revendeur</Link> ou contactez-nous pour demander un accès.</p>
+      <p className="mt-10 text-center text-sm text-encre/70">Revendeur ? <Link className="underline" href="/devenir-revendeur">Créez votre compte revendeur</Link> ou rendez-vous dans l&apos;<Link className="underline" href="/revendeur">espace revendeur</Link>.</p>
     </div>
     </>
   );

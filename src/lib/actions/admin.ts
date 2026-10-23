@@ -299,6 +299,29 @@ export async function resetResellerPassword(form: FormData) {
   back(`/admin/revendeurs/${id}`, { ok: "Nouveau mot de passe créé. Envoyez-le au revendeur." });
 }
 
+/** Activation en un clic d'un revendeur inscrit depuis le site, avec le pays qu'il a déclaré. */
+export async function activateReseller(form: FormData) {
+  const admin = await requireAdmin();
+  const id = z.uuid().parse(str(form, "id"));
+  const supabase = await createSessionClient();
+  const { data: p } = await supabase.from("profiles").select("declared_country").eq("id", id).eq("role", "reseller").maybeSingle();
+  const country = p?.declared_country === "FR" ? "FR" : p?.declared_country === "DZ" ? "DZ" : null;
+  if (!country) back(`/admin/revendeurs/${id}`, { erreur: "Choisissez d'abord le pays du revendeur, puis enregistrez." });
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      status: "active",
+      validated_country: country,
+      pricing_profile: country === "DZ" ? "reseller_dz" : "reseller_fr",
+      validated_at: new Date().toISOString(),
+      validated_by: admin.userId,
+    })
+    .eq("id", id)
+    .eq("role", "reseller");
+  revalidatePath("/admin/revendeurs");
+  back("/admin/revendeurs", error ? { erreur: "Activation impossible." } : { ok: "Revendeur activé : il peut maintenant voir ses tarifs et commander." });
+}
+
 // ---------------------------------------------------------------------------
 // Administrateurs
 // ---------------------------------------------------------------------------

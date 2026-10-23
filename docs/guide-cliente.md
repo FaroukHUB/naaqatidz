@@ -69,6 +69,14 @@ Le compte est actif tout de suite ; un message avec l'adresse de connexion, l'em
 
 ## Revendeurs
 
+**Inscription libre** : un revendeur crée lui-même son compte sur `/devenir-revendeur` (lien « Devenir revendeur »
+sur l'accueil, en bas de page et sur la page de connexion), avec son adresse de livraison.
+- Algérie : compte actif tout de suite (prix publics DZD).
+- France : compte en attente ; dans **Administration → Revendeurs**, cliquez sur **« Activer »** (les tarifs France
+  sont confidentiels, d'où cette vérification).
+
+**Création par vous** :
+
 Tout se fait dans **Administration → Revendeurs** (`/admin/revendeurs`), sans passer par Supabase :
 
 1. Remplissez **« Ajouter un revendeur »** : email, pays (Algérie ou France), nom, boutique, téléphone et,

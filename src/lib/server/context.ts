@@ -13,8 +13,13 @@ export function getOrderDeps(): OrderDeps {
 
 /** Empreinte de l'adresse IP (jamais stockée en clair) pour la limitation de débit. */
 export function clientKey(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  const ip = forwarded || request.headers.get("x-real-ip") || "inconnue";
+  return clientKeyFromHeaders(request.headers);
+}
+
+/** Même empreinte, à partir des en-têtes (actions serveur). */
+export function clientKeyFromHeaders(headers: Headers): string {
+  const forwarded = headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const ip = forwarded || headers.get("x-real-ip") || "inconnue";
   return createHash("sha256").update(`${process.env.ORDER_TOKEN_SECRET ?? ""}:${ip}`).digest("hex");
 }
 

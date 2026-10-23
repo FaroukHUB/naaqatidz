@@ -44,7 +44,7 @@ export default async function AdminHome() {
         </Link>
         <Link href="/admin/revendeurs" className="card p-4 hover:shadow-md">
           <p className="text-4xl font-semibold text-symbole">{pending ?? 0}</p>
-          <p>Compte(s) revendeur en attente de validation</p>
+          <p>Revendeur(s) France à activer</p>
         </Link>
         <Link href="/studio" prefetch={false} className="card p-4 hover:shadow-md">
           <p className="font-semibold text-symbole">Sanity Studio ↗</p>
