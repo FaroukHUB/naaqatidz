@@ -142,12 +142,13 @@ export default async function HomePage() {
       {/* Univers de la marque */}
       <section className="container-page py-16" aria-labelledby="titre-univers">
         <SectionTitle kicker="Nos savoir-faire" title="L'univers Naaqati" id="titre-univers" />
-        <ul className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
+        {/* Cartes de même hauteur ; titre réservé sur 2 lignes pour que les textes commencent à la même hauteur. */}
+        <ul className="mt-10 grid auto-rows-fr grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
           {UNIVERS.map((u) => (
-            <li key={u.title} className={`relative flex min-h-44 flex-col justify-end overflow-hidden rounded-2xl border ${u.border} ${u.bg} p-5`}>
+            <li key={u.title} className={`relative flex min-w-0 flex-col overflow-hidden rounded-2xl border ${u.border} ${u.bg} p-4 pt-9 sm:p-6 sm:pt-11`}>
               <Sparkle className={`absolute right-4 top-4 ${u.ink} opacity-70`} size={12} />
-              <h3 className={`font-display text-base uppercase tracking-[0.1em] sm:text-lg ${u.ink}`}>{u.title}</h3>
-              <p className={`tagline mt-2 text-sm sm:text-base ${u.ink === "text-or" ? "text-encre-claire" : ""}`}>{u.text}</p>
+              <h3 className={`min-h-[2.5em] break-words font-display text-[13px] uppercase leading-tight tracking-[0.06em] sm:text-base lg:text-lg ${u.ink}`}>{u.title}</h3>
+              <p className={`tagline mt-2 text-sm leading-snug sm:text-base ${u.ink === "text-or" ? "text-encre-claire" : ""}`}>{u.text}</p>
             </li>
           ))}
         </ul>
