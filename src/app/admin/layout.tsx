@@ -14,6 +14,7 @@ const NAV = [
   { href: "/admin/tarifs-france", label: "Tarifs France" },
   { href: "/admin/livraison", label: "Livraison" },
   { href: "/admin/parametres", label: "Paramètres" },
+  { href: "/admin/administrateurs", label: "Administrateurs" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

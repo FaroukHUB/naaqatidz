@@ -217,7 +217,7 @@ async function rememberPassword(userId: string, password: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    path: "/admin/revendeurs",
+    path: "/admin",
     maxAge: 30 * 60,
   });
 }
@@ -297,6 +297,46 @@ export async function resetResellerPassword(form: FormData) {
   if (error) back(`/admin/revendeurs/${id}`, { erreur: "Changement de mot de passe impossible." });
   await rememberPassword(id, password);
   back(`/admin/revendeurs/${id}`, { ok: "Nouveau mot de passe créé. Envoyez-le au revendeur." });
+}
+
+// ---------------------------------------------------------------------------
+// Administrateurs
+// ---------------------------------------------------------------------------
+/**
+ * Ajout d'un administrateur en une étape. Le rôle n'étant modifiable par aucune session (droits par colonne),
+ * il est attribué avec la clé secrète, après vérification que l'auteur est lui-même administrateur.
+ */
+export async function createAdmin(form: FormData) {
+  await requireAdmin();
+  const email = z.email().safeParse(str(form, "email").toLowerCase());
+  if (!email.success) back("/admin/administrateurs", { erreur: "Adresse email invalide." });
+  const typed = optional(form, "password");
+  if (typed && (typed.length < 8 || typed.length > 72)) back("/admin/administrateurs", { erreur: "Le mot de passe doit faire au moins 8 caractères." });
+  const password = typed ?? readablePassword();
+  const service = createServiceClient();
+  const { data, error } = await service.auth.admin.createUser({ email: email.data, password, email_confirm: true });
+  if (error || !data.user) back("/admin/administrateurs", { erreur: "Création impossible : cette adresse email a peut-être déjà un compte." });
+  const { error: profileError } = await service
+    .from("profiles")
+    .update({ role: "admin", status: "active", contact_name: optional(form, "contact_name") })
+    .eq("id", data.user.id);
+  if (profileError) {
+    await service.auth.admin.deleteUser(data.user.id);
+    back("/admin/administrateurs", { erreur: "Création impossible, réessayez." });
+  }
+  await rememberPassword(data.user.id, password);
+  back("/admin/administrateurs", { ok: "Administrateur ajouté. Envoyez-lui ses identifiants ci-dessous.", nouveau: data.user.id });
+}
+
+/** Retire ou rétablit l'accès d'un administrateur (jamais le sien, pour ne pas s'enfermer dehors). */
+export async function setAdminAccess(form: FormData) {
+  const me = await requireAdmin();
+  const id = z.uuid().parse(str(form, "id"));
+  const status = z.enum(["active", "suspended"]).parse(str(form, "status"));
+  if (id === me.userId) back("/admin/administrateurs", { erreur: "Vous ne pouvez pas retirer votre propre accès." });
+  const supabase = await createSessionClient();
+  const { error } = await supabase.from("profiles").update({ status }).eq("id", id).eq("role", "admin");
+  back("/admin/administrateurs", error ? { erreur: "Modification impossible." } : { ok: status === "active" ? "Accès rétabli." : "Accès retiré." });
 }
 
 // ---------------------------------------------------------------------------

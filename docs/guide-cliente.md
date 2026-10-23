@@ -61,6 +61,12 @@ Sans vidéo, l'ancien en-tête illustré reste affiché.
 5. Ajoutez les références de suivi (une par colis si besoin).
 6. « Exporter (CSV) » produit un fichier de préparation (format générique, pas le format d'import Maystro).
 
+## Administrateurs
+
+**Administration → Administrateurs** : saisissez l'email (et le nom), cliquez sur « Ajouter l'administrateur ».
+Le compte est actif tout de suite ; un message avec l'adresse de connexion, l'email et le mot de passe s'affiche
+(« Copier le message » ou « Envoyer par WhatsApp »). « Retirer l'accès » bloque un administrateur sans le supprimer.
+
 ## Revendeurs
 
 Tout se fait dans **Administration → Revendeurs** (`/admin/revendeurs`), sans passer par Supabase :
