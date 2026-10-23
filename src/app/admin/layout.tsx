@@ -27,13 +27,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Image src="/brand/naaqati-logo.webp" alt="Naaqati" width={357} height={160} unoptimized className="h-9 w-auto" />
             <span className="text-sm font-semibold text-marron">Administration</span>
           </Link>
-          <nav aria-label="Administration" className="flex flex-1 flex-wrap gap-1 text-sm">
+          <nav aria-label="Administration" className="order-last -mx-4 flex w-[calc(100%+2rem)] gap-1 overflow-x-auto whitespace-nowrap px-4 pb-1 text-sm md:order-none md:mx-0 md:w-auto md:flex-1 md:flex-wrap md:overflow-visible md:px-0 md:pb-0">
             {NAV.map((n) => (
               <Link key={n.href} href={n.href} className="rounded-md px-3 py-2 font-semibold text-marron hover:bg-creme">{n.label}</Link>
             ))}
             <Link href="/studio" prefetch={false} className="rounded-md bg-creme px-3 py-2 font-semibold text-symbole hover:bg-sable">Catalogue &amp; contenus (Sanity Studio) ↗</Link>
           </nav>
-          <span className="hidden text-xs text-encre/60 sm:inline">{viewer.email}</span>
+          <span className="ml-auto hidden text-xs text-encre/60 sm:inline">{viewer.email}</span>
           <form action={signOut}><button className="rounded-md px-3 py-2 text-sm underline">Déconnexion</button></form>
         </div>
       </header>
